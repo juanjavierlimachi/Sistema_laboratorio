@@ -10,12 +10,12 @@
 <table class="table table-hover table-striped">
 	<tr class="success">
 		<td align="center" colspan="6"> <strong>REPORTE DE ANALISIS</strong></td>
-		<td style="color:red" colspan="2"> Nro. CERT. {{cliente.id}}</td><td></td>
+		<td style="color:red"> Nro. CERT. {{cliente.id}}</td><td></td>
 	</tr>
 	<tr>
-		<td colspan="4"><br><strong>PERTENECIENTE A:</strong> {{cliente.Nombre|upper}}</td>
+		<td colspan="5"><br><strong>PERTENECIENTE A:</strong> {{cliente.Nombre|upper}}</td>
 		<td colspan="1"><br><strong>TELÉFONO:</strong> {{cliente.Telefono}}</td>
-		<td colspan="1"><br><strong>DIRECCIÓN:</strong> {{cliente.Direccion}}</td>
+		<td colspan="2"><br><strong>DIRECCIÓN:</strong> {{cliente.Direccion}}</td>
 	</tr>
 	<tr><td colspan="3"><br><strong>NIT: </strong>{{cliente.Nit}}</td>
 		<td colspan="2"><br><strong>Fecha de Registro:</strong> {{cliente.fecha_registro|date:"l d M Y"}}</td>

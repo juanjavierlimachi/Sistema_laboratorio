@@ -161,11 +161,11 @@
                 <li class="">
                   <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                     <img src="images/img.jpg" alt="">
-                    {{user.username|upper}}
+                    {{user.first_name|upper}}
                     <span class=" fa fa-angle-down"></span>
                   </a>
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
-                    <li><a href="#" onclick="updatePerfilUser()"> Mi perfil</a></li>
+                    <li><a href="#" onclick="menuLink('updateUser')"> Mi perfil</a></li>
                     <li><a href="javascript:;">Ayuda</a></li>
                     <li><a href="/logout"><i class="fa fa-sign-out pull-right"></i>Salir</a></li>
                   </ul>

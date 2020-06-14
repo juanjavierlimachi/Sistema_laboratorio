@@ -32,3 +32,6 @@ class FormResultado(ModelForm):
 	class Meta():
 		model = Resultado
 		exclude=('estado','producto')
+	def __init__(self, *args, **kwargs):
+		super(FormResultado, self).__init__(*args, **kwargs)
+		self.fields['Elemento'].queryset = Elemento.objects.filter(estado=True)

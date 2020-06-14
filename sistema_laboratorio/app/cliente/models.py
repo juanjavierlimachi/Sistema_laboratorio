@@ -15,7 +15,7 @@ class Cliente(models.Model):
 class Elemento(models.Model):
 	Nombre_del_Elemento = models.CharField(max_length=100, unique=True)
 	Abreviatura = models.CharField(max_length=100, unique=True)
-	estado=models.BooleanField(default=True)
+	estado=models.BooleanField(default=True, help_text="Desactive esta casilla para dar de baja este elemento")
 	fecha_registro = models.DateTimeField(auto_now_add=True)
 	def __str__(self):
 		return self.Nombre_del_Elemento

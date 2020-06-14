@@ -49,3 +49,15 @@ def VerUsers(request):
 		'datos':datos
 	}
 	return render(request,"inicio/VerUsers.html",dic)
+from django.contrib import messages
+def updateUser(request):
+	if request.method=='POST':
+		user_form=UserForms(request.POST,instance=request.user)
+		if user_form.is_valid():
+			user_form.save()
+			messages.success(request, 'Your password was updated successfully!')
+			#return render(request,'inicio/updateUser.html')  
+			#return redirect('/')
+	else:
+		user_form=UserForms(instance=request.user)
+	return render(request,'inicio/updateUser.html',{'user_form':user_form})

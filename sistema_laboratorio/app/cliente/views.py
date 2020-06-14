@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect,HttpResponse,HttpResponseRedirect
+from django.shortcuts import render, redirect,HttpResponse,HttpResponseRedirect, get_object_or_404
 from sistema_laboratorio.app.cliente.forms import *
 from django.shortcuts import redirect
 # Create your views here.
@@ -36,12 +36,8 @@ def updateClient(request, id_cliente):
 	return render(request,'cliente/updateClient.html',{'forms':forms,'dato':dato})
 
 def DetalleCliente(request,id):#id cliente
-	#del request.session['id_producto']
-	datos=Cliente.objects.get(id=int(id))
-	try:
-		productos=Producto.objects.filter(Cliente_id=id).order_by('-id')
-	except :
-		productos = {}
+	datos = get_object_or_404(Cliente, pk=id)
+	productos=Producto.objects.filter(Cliente_id=id).order_by('-id')
 	dic={
 		'cliente':datos,
 		'productos':productos
@@ -60,6 +56,7 @@ def Detalle_persona(request):
 	#del request.session['sesion']   
 	return render(request,'cliente/Detalle_persona.html',dic)
 def RegisterNewProductAndResult(request, id):#(id_cliente)
+	cliente = Cliente.objects.get(id = id)
 	Usuario=Producto(Usuario=request.user)
 	if request.method == 'POST':
 		forms=FormProducto(request.POST,instance=Usuario)
@@ -77,7 +74,7 @@ def RegisterNewProductAndResult(request, id):#(id_cliente)
 	else:
 		forms=FormProducto(instance=Usuario)
 		formR=FormResultado()
-	return render(request,'cliente/RegistrarMuestra.html',{'forms':forms,'formR':formR,'id':int(id)})
+	return render(request,'cliente/RegistrarMuestra.html',{'forms':forms,'formR':formR,'cliente':cliente})
 
 def LitarElementos(request):
 	datos = Elemento.objects.all().order_by('-id')

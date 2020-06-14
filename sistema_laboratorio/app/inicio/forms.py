@@ -27,3 +27,9 @@ class UserForm(UserCreationForm):
 			user.is_superuser = False
 			user.save()
 		return user
+
+
+class UserForms(forms.ModelForm):
+	class Meta:
+		model=User
+		fields = ('username','first_name')
