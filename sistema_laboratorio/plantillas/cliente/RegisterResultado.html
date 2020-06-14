@@ -1,0 +1,77 @@
+<style type="text/css">
+  #contenedora{text-align: center;}
+  #re{
+    
+    width: : auto;
+    height: 65px;
+    
+    display: inline-block;
+    margin: 5px;
+    background:#F9DCDA;
+  }
+</style>
+{% load bootstrap %}
+ <script type="text/javascript">
+   $('#form .form-horizontal').submit(function(e){
+        e.preventDefault();
+        var dato=$(this).serialize();
+        $.ajax({
+            type:'POST',
+            url:$(this).attr("action"),
+            data: dato,
+            success:function(resp){
+              $.ajax({
+                type:'GET',
+                url:'/RegisterResultados/'+resp,
+                data: dato,
+                success:function(resp){
+                  $(".modal-body").html(resp);
+                  }
+              });
+            }
+        });
+    });
+    function deleteRresult(router){
+      $.ajax({
+          type:'GET',
+          url:router,
+          success:function(resp){
+            $(".modal-body").html(resp);
+            }
+        });
+    }
+ </script> 
+ <table class="table table-hover table-striped">
+  <tr class="success">
+    <td align="center" colspan="4"> <strong>Nro. LOTE: {{getProduct.Lote|upper}}</strong></td>
+  </tr>
+
+  <tr>
+    <td>
+    <div id="contenedora">
+      {% for i in results %}
+        <div id="re">
+          {{i.Elemento}}
+          <br>
+          {{i.Resultado}}
+          <br>
+          <a href="#" type="button" title="Eliminar resultado" onclick="deleteRresult('/delite-result/{{i.id}}')">X</a>
+        </div>
+      {% endfor %}
+    </div>
+    </td>
+  </tr>
+</table>
+<div id="form">
+ <form method="POST" action="/RegisterResultados/{{getProduct.id}}/" role="form" class="form-horizontal" id="demo-form22" data-parsley-validate >{% csrf_token %}
+                {{forms|bootstrap_horizontal:'col-xs-4'}}
+     <div class="ln_solid"></div>
+      <div class="form-group">
+        <div class="col-md-6 col-md-offset-4">
+        <button type="submit" class="btn btn-primary">Registrar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="reset" class="btn btn-warning">Borrar</button>
+        </div>
+      </div>
+  </form>
+</div>

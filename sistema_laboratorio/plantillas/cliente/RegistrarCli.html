@@ -1,0 +1,91 @@
+<style type="text/css">
+.title_right{
+  margin-top: -13px;
+  margin-bottom: -50px;
+}
+</style>
+
+<div class="page-title">
+  <div class="title_left">
+    <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal" 
+      onclick="NewPersona()"><span class="fa fa-database">
+        Registrar Nuevo Cliente
+      </span></button>
+              </div>
+      </div>
+<div class="table-responsive">
+	<h4 colspan="5" align="center">CLIENTES REGISTRADOS EN EL SISTEMA</h4>
+<table class="table table-bordered datatable table-striped table-hover">
+<thead class="success">
+	<th>Nro</th>
+	<th>NOMBRE</th>
+	<th>DIRECCIÓN</th>
+	<th>TELÉFONO</th>
+  <th>TIPO DE CLIENTE</th>
+	<th>FECHA DE REGISTRO</th>
+</thead>
+{% for i in datos %}
+		<tr onclick="DetalleCliente({{i.id}});" style="cursor: pointer;">
+			<td>
+					{{forloop.counter}}
+				
+			</td>
+			<td>{{i.Nombre}}</td>
+			<td>{{i.Direccion}}</td>
+			<td>{{i.Telefono}}</td>
+			<td>{% if i.Particular %}Particular {% else %} Empresa{% endif %}</td>
+			<td>{{i.fecha_registro|date:"l d M Y"}}</td>
+    </tr>
+{% endfor %}
+</table>
+</div>
+<script type="text/javascript">
+
+function NewPersona(){
+	$("#exampleModal .modal-title").text("REGISTRAR NUEVO CLIENTE Ó EMPRESA");
+        $.ajax({
+            type:'GET',
+            url:'/NewPersona',
+            success:function(resp){
+              $(".modal-body").html(resp);
+            }
+        });
+}
+function DetalleCliente(ids){
+      $.ajax({
+            type:'GET',
+            url:'/DetalleCliente/'+ids,
+            success:function(resp){
+              $('.x_content').html(resp);
+            }
+        });
+}
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+   
+  $('.datatable').DataTable( {
+    language: {
+        "decimal": "",
+        "emptyTable": "No hay información",
+        "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+        "infoEmpty": "Mostrando of 0 to 0 of 0 Filas",
+        "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+        "infoPostFix": "",
+        "thousands": ",",
+        "lengthMenu": "Mostrar _MENU_ Filas",
+        "loadingRecords": "Cargando...",
+        "processing": "Procesando...",
+        "search": "Buscar:",
+        "zeroRecords": "Sin resultados encontrados",
+        "paginate": {
+            "first": "Primero",
+            "last": "Ultimo",
+            "next": "Siguiente",
+            "previous": "Anterior"
+        }
+    },
+        } );
+    } );
+</script>

@@ -1,0 +1,46 @@
+<script type="text/javascript">
+	function CrearUsuarios(){
+		$("#exampleModal .modal-title").text("REGISTRAR NUEVO USUARIO");
+        $.ajax({
+          type:'GET',
+          url:'/register',
+          success:function(resp){
+            $(".modal-body").html(resp);
+          }
+        });
+      }
+      
+</script>
+<div class="table-responsive">
+
+<button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" 
+  		onclick="CrearUsuarios()"><span class="fa fa-database">
+  			Registrar Usuario
+  		</span></button>
+	<h4 colspan="6" align="center"><strong>LISTA DE USUARIOS REGISTRADOS EN EL SISTEMA</strong></h4>
+<table class="table table-hover table-striped table-bordered dt-responsive datatable" id="table-ingresos">
+<thead  class="success">
+		<th style="width: 3%;">Nro</th>
+		
+		<th>USUARIO</th>
+		<th>NOMBRE COMPLETO</th>
+		<th>CORREO ELECTRONICO</th>
+		<th>FECHA DE REGISTRO</th>
+		
+</thead >
+
+{% for i in datos %}
+		<tr>
+			<td>
+			{{forloop.counter}}       	
+			</td>
+			<td>{{i.username}}</td>
+			<td>{{i.get_full_name|upper}}</td>
+			<td>{{i.email}}</td>
+			<td>{{i.date_joined|date:"l d M Y"}}</td>
+		</tr>
+	{% empty %}
+	<tr> <td colspan="6" align="center"><strong>No se encontró registros</strong></td> </tr>
+{% endfor %}
+</table>
+</div>
