@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect,HttpResponse
+from django.shortcuts import render, redirect,HttpResponse,HttpResponseRedirect
 from django.contrib.auth import logout as do_logout
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import AuthenticationForm
@@ -6,6 +6,8 @@ from django.contrib.auth import login as do_login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import User
 from sistema_laboratorio.app.inicio.forms import *
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 def welcome(request):
 	if request.user.is_authenticated:
@@ -38,7 +40,9 @@ def login(request):
 				do_login(request, user)
 				return redirect("/")
 		else:
-			return render(request,'inicio/login.html',{'mej':'Error, datos incorrectos intente nuevamente gracias.'})
+			messages.error(request,'Error, datos incorrectos intente nuevamente gracias.')
+			return redirect('/')
+			#return render(request,'inicio/login.html',{'mej':'Error, datos incorrectos intente nuevamente gracias.'})
 	return render(request,"inicio/login.html",{'form':form})
 def logout(request):
 	do_logout(request)
@@ -49,7 +53,11 @@ def VerUsers(request):
 		'datos':datos
 	}
 	return render(request,"inicio/VerUsers.html",dic)
+
+
 from django.contrib import messages
+
+
 def updateUser(request):
 	if request.method=='POST':
 		user_form=UserForms(request.POST,instance=request.user)
@@ -61,3 +69,24 @@ def updateUser(request):
 	else:
 		user_form=UserForms(instance=request.user)
 	return render(request,'inicio/updateUser.html',{'user_form':user_form})
+
+
+@login_required(login_url='/')
+def ChangePassword(request):
+	msj = ''
+	if request.method=='POST':
+		form=ChangePasswordForm(request.POST)
+		new_password = request.POST['new_password']
+		confirmed = request.POST['confirm_password']
+		user = request.user
+		print(user.check_password(request.POST['old_password']))
+		if new_password == confirmed and user.check_password(request.POST['old_password']):
+			user.set_password(new_password)
+			user.save()
+			print('bien')
+			return HttpResponse("success")
+		else:
+			return HttpResponse("error")
+	else:
+		form=ChangePasswordForm()
+	return render(request,'inicio/changePassword.html',{'form':form})

@@ -42,8 +42,9 @@
     <link href="{% static 'css/scroller.bootstrap.min.css' %}" rel="stylesheet"> -->
 
     <script type="text/javascript">
-      
-      function menuLink(route){
+
+
+    function menuLink(route){
         $.ajax({
           type:'GET',
           url:route,
@@ -64,6 +65,16 @@
       }
       function Espera(){
             $(".x_content").html('<img src="/static/img/log.gif" id="icono"></img><br>Procesando...');
+        }
+        function menuModal(route,title) {
+        $("#exampleModal .modal-title").text(title);
+        $.ajax({
+              type:'GET',
+              url:route,
+              success:function(res){
+                $('#DatosContenidos').html(res);
+              }
+            });
         }
     </script>
     
@@ -165,9 +176,9 @@
                     <span class=" fa fa-angle-down"></span>
                   </a>
                   <ul class="dropdown-menu dropdown-usermenu pull-right">
-                    <li><a href="#" onclick="menuLink('updateUser')"> Mi perfil</a></li>
-                    <li><a href="javascript:;">Ayuda</a></li>
-                    <li><a href="/logout"><i class="fa fa-sign-out pull-right"></i>Salir</a></li>
+                    <li><a href="#" onclick="menuLink('updateUser')"> Mi Información</a></li>
+                    <li><a data-toggle="modal" data-target="#exampleModal" onclick="menuModal('changePassword','Cambiar mi contraseña')">Cambiar Contraseña</a></li>
+                    <li><a href="/logout"><i class="fa fa-sign-out pull-right"></i>Cerrar Sesión</a></li>
                   </ul>
                 </li>
 
@@ -178,9 +189,6 @@
         <!-- /top navigation -->
 
         <!-- page content -->
-       
-      
-
             <div class="right_col" role="main" style="min-height: 1704px;">
 
               <div class="row">
@@ -188,39 +196,37 @@
                 <div class="x_panel">
                     <div class="x_content">
                      <!--Contenidos-->
-                     
-
                     </div>
               </div>
              </div>
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <strong class="modal-title" id="exampleModalLabel"> </strong>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-      <div class="modal-body" id="DatosContenidos"><!--contenido--> </div>
-    </div>
-  </div>
-</div>
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <strong class="modal-title" id="exampleModalLabel"> </strong>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                      <div class="modal-body" id="DatosContenidos"><!--contenido--> </div>
+                    </div>
+                  </div>
+                </div>
 
 
-<div class="modal fade bd-example-modal-lg" id="segundo" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-          <strong class="modal-title" id="exampleModalLabel"> </strong>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-      <div class="modal-body" id="Contenidos"><!--contenido--> </div>
-    </div>
-  </div>
-</div>
+                <div class="modal fade bd-example-modal-lg" id="segundo" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                          <strong class="modal-title" id="exampleModalLabel"> </strong>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                      <div class="modal-body" id="Contenidos"><!--contenido--> </div>
+                    </div>
+                  </div>
+                </div>
              </div>
                 <!-- End to do list -->
 

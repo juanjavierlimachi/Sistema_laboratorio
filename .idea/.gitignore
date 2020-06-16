@@ -1,6 +1,7 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+db.sqlite3
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml

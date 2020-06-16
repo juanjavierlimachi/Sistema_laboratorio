@@ -33,3 +33,9 @@ class UserForms(forms.ModelForm):
 	class Meta:
 		model=User
 		fields = ('username','first_name')
+
+
+class ChangePasswordForm(forms.Form):
+	old_password = forms.CharField(max_length=40,label="Antigua Contraseña")
+	new_password = forms.CharField(max_length=40,label="Nueva Contraseña")
+	confirm_password = forms.CharField(max_length=40,label="Repetir Contraseña")

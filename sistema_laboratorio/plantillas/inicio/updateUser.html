@@ -1,7 +1,5 @@
 {% load bootstrap %}
-<style type="text/css">
-.helptext {display: none;}
-</style>
+
 <script type="text/javascript">
 $('#demo-form2').submit(function(e){
 		e.preventDefault();
@@ -10,43 +8,23 @@ $('#demo-form2').submit(function(e){
 			url:$(this).attr('action'),
 			data: $(this).serialize(),
 			success:function(resp){
-                alert('Se actualizaron tus datos correctamente');
-                window.location.href = '/';
+                $('#demo-form2 legend').html('Se actualizaron tus datos correctamente! se actualizará la página en 3 seg.');
+                setInterval(function () {
+                    window.location.href = '/';
+                },3000);
+
 			}
 		});
 	});
 </script>
-<div class="messages">
-    {{ message }}
-    {% if messages %}
-    <ul>
-       {% for message in messages %}
-           <li>{{ message }}</li>
-       {% endfor %}
-    </ul>
-    {% endif %}
-</div>
 <form  method="POST" action="updateUser" role="form" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">{% csrf_token %}
 	<legend>Actualizar mi información</legend>
   {{ user_form|bootstrap_horizontal:'col-xs-4'}}
     <div class="form-group">
         <div class="col-md-6 col-md-offset-4">
         <button type="submit" class="btn btn-primary">Editar</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <a class="btn btn-default" href="#" onclick="Passwordd()">Cambiar Contraseña</a>
+        <button type="button" class="btn btn-secondary" onclick="menuLink('/RegistrarCli')">Cancelar</button>
         </div>
       </div>
-  
 </form>
 </div>
-<script type="text/javascript">
-function Passwordd(){
-	$.ajax({
-		type:"GET",
-		url:"/editarcontracenia/",
-		success:function(resp){
-			$(".x_content").html(resp);
-		}
-	});
-}
-</script>
