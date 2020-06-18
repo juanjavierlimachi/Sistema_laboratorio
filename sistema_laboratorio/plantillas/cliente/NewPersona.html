@@ -2,15 +2,12 @@
  <script type="text/javascript">
    $('#demo-form2').submit(function(e){
         e.preventDefault();
-        var dato=$(this).serialize();
-        console.log(dato);
         $.ajax({
             type:'POST',
             url:$(this).attr("action"),
-            data: dato,
+            data: $(this).serialize(),
             success:function(resp){
-                Detalle_persona();
-
+                $('.x_content').html(resp);
             }
         });
     });

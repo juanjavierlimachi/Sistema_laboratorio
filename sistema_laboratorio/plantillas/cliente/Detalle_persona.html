@@ -17,7 +17,7 @@
 		<td colspan="1"><br><strong>TELÉFONO:</strong> {{cliente.Telefono}}</td>
 		<td colspan="2"><br><strong>DIRECCIÓN:</strong> {{cliente.Direccion}}</td>
 	</tr>
-	<tr><td colspan="3"><br><strong>NIT: </strong>{{cliente.Nit}}</td>
+	<tr><td colspan="4"><br><strong>NIT: </strong>{{cliente.Nit}}</td>
 		<td colspan="2"><br><strong>Fecha de Registro:</strong> {{cliente.fecha_registro|date:"l d M Y"}}</td>
 		<td><br><strong>Cliente: </strong>{% if cliente.Particular %}Particular{% else %}Empresa{% endif %}</td>
 		<td colspan="1"><br>Estado:  {% if cliente.estado %}
@@ -27,34 +27,47 @@
 			{% endif %}</td>
 	</tr>
 </table>
-<table class="table table-hover table-striped">
+<table class="table table-striped table-bordered">
 	<thead  class="success">
 		<th style="width: 3%;">Nro</th>
 		<th>FECHA</th>
 		<th>LOTE</th>
 
 	</thead >
+	<tbody>
 	{% for i in productos %}
 	<tr>
 		<td>{{forloop.counter}}</td>
 		<td>{{i.fecha_registro|date:"l d M Y"}}</td>
 		<td>{{i.Lote|upper}}</td>
-		<td><button type="button" class="btn btn-success" onclick="detalleClient('/RegisterResultados/{{i.id}}','REGISTRAR MUESTRA DE MINERAL')" data-toggle="modal" data-target=".bd-example-modal-lg">Resultados</button></td>
-		<td><input type="checkbox" name="product" id="id_product"></td>
-		
+		<td>{{i.ingreso.all.count}}</td>
+		<td>
+			{% if i.estado %}
+			<button type="button" class="btn btn-success btn-xs" onclick="detalleClient('/RegisterResultados/{{i.id}}','REGISTRAR MUESTRA DE MINERAL DE: {{i.Cliente.Nombre|upper}}')" data-toggle="modal" data-target=".bd-example-modal-lg">Resultados</button>
+			<button type="button" class="btn btn-warning btn-xs" onclick="detalleClient('update-product/{{i.id}}','Editar el paquete: {{i.Lote|upper}}')" data-toggle="modal" data-target="#exampleModal">Editar</button>
+			{% else %}
+			<button type="button" class="btn btn-danger btn-xs" onclick="restoreProduct('/restore-producto/{{i.id}}',' ')">Restaurar</button>
+			{% endif %}
+		</td>
+		<td>
+			{% if i.estado %}
+			<input type="checkbox"  name="checks[]" value="{{i.id}}" id="id_product">
+			{% endif %}
+		</td>
 	</tr>
 	{% empty %}
 	<tr> <td colspan="5" align="center"><strong>Aún no tiene paquetes registrados: registre aqui: </strong><a href="#" data-toggle="modal" id=myModal onclick="detalleClient('/RegisterNewProductAndResult/{{cliente.id}}','')" data-target="#exampleModal">Registrar paquete</a></td> </tr>
-{% endfor %}
-	{% if productos.count > 0 %}
-	<tr><td colspan="4"></td><td><a href="#" class="btn btn-warning">Imprimir</a></td></tr>
-	{% endif %}
+	{% endfor %}
+		{% if productos.count > 0 %}
+		<tr><td colspan="5"></td><td><a href="#" onclick="printCertify()" class="btn btn-warning" >Imprimir</a></td></tr>
+		{% endif %}
+	</tbody>
 </table>
 </div>
 <script type="text/javascript">
 	$(document).ready(function(){
 		$("#myModal").trigger("click");
-	});
+	} );
 	function detalleClient(route,title){
 		$(".modal-title").text(title);
         $.ajax({
@@ -64,5 +77,38 @@
                 $(".modal-body").html(resp);  
             }
         });
+	}
+	function restoreProduct(route,title){
+        $.ajax({
+          type:'GET',
+          url: route,
+          success:function(resp){
+            $('.x_content').html(resp);
+			/*
+fix this part because when I'm restoring a product it shows and hides the modal
+***
+To fix, you need to send the request to a url, then create a template that will display the product data.
+*/
+			$(".modal .close").click();
+          }
+        });
+	}
+	var listIdProduct;
+	$('[name="checks[]"]').click(function() {
+      
+	  var arr = $('[name="checks[]"]:checked').map(function(){
+		return this.value;
+	  }).get();
+	  
+	  listIdProduct = arr.join(',');
+	  
+	  //console.log(JSON.stringify(arr));
+	  
+	  //console.log(str);
+	
+	});
+	function printCertify(){
+		console.log(listIdProduct);
+		window.open("print-certify/"+listIdProduct+"/");
 	}
 </script>

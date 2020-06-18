@@ -17,6 +17,12 @@ class FormProducto(ModelForm):
 		exclude=('estado','Usuario','Cliente')
 
 
+class FormProductoUpdate(ModelForm):
+	class Meta():
+		model = Producto
+		exclude=('Usuario','Cliente')
+
+
 class FormElemento(forms.ModelForm):
 	class Meta():
 		model = Elemento
