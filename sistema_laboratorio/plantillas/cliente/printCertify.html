@@ -1,0 +1,32 @@
+
+<div id="printCertify">
+    <strong>Perteneciente a: </strong> {{getProduct.Cliente.Nombre|upper}}
+    <table border="1">
+        <thead>
+            <th>Fecha</th>
+            <th>Lote</th>
+            <th></th>
+        </thead>
+        <tbody>
+            {% for i in idProductos %}
+                {% for producto in productos %}
+                    {% if i == producto.id %}
+                        <tr>
+                            <td>{{producto.fecha_registro|date:"d M Y"}}</td>
+                            <td>{{producto.Lote}}</td>
+                            {% for resultado in resultados %}
+                                {% if resultado.producto.id == producto.id %}
+                                    <td>{{resultado.Elemento.Abreviatura}} {{resultado.Resultado}}</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <footer>
+        <strong>Fecha: Potosí {{now}}</strong><br>
+        <strong>Gefe de Laboratorio: {{user.first_name|upper}}</strong>
+    </footer>
+</div>
