@@ -154,5 +154,23 @@ def deleteResult(request, id_result):
 	return RegisterResultados(request, id_product)
 
 def printCertify(request, idProductos):
-	print(idProductos)
-	return HttpResponse()
+	idProductos = idProductos.split(',')
+	idProductos = list(map(int,idProductos))
+	productos = Producto.objects.filter(estado = True)
+	resultados = Resultado.objects.filter(estado = True).order_by('Elemento')
+
+	#consulta = Producto.objects.raw('SELECT * FROM clientes_productos')
+	for id_producto in idProductos:
+		getProduct = Producto.objects.get(id = int(id_producto))
+		print(id_producto)
+		results=Resultado.objects.filter(producto_id=getProduct.id)
+		#print(results)
+		#(getProduct,results)
+		
+	return render(request,'cliente/printCertify.html',{'idProductos':idProductos, 'productos':productos, 'resultados':resultados,'getProduct':getProduct})
+
+
+def showCertify(getProduct):
+	results=Resultado.objects.filter(producto_id=getProduct.id)
+	print('holas')
+	return HttpResponse(results)
