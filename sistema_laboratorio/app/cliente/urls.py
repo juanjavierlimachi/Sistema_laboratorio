@@ -22,6 +22,7 @@ urlpatterns = [
 	path('RegisterResultados/<int:id_producto>/',views.RegisterResultados),
 	path('delite-result/<int:id_result>/',views.deleteResult),
 #reportes
-	url(r'^print-certify/(?P<idProductos>[^/]+)/$',views.printCertify),
+	path('detailReport',views.detailReport),
+	#url(r'^print-certify/(?P<idProductos>[^/]+)/$',views.printCertify),
 	#path('print-certify/(?P<idProductos>[^/]+)/',views.printCertify),
 ]

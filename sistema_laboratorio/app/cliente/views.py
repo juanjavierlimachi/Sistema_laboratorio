@@ -174,3 +174,6 @@ def showCertify(getProduct):
 	results=Resultado.objects.filter(producto_id=getProduct.id)
 	print('holas')
 	return HttpResponse(results)
+
+def detailReport(request):
+	return render(request,'cliente/detailReport.html')
