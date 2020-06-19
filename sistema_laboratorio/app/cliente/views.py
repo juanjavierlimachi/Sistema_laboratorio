@@ -12,13 +12,15 @@ def NewPersona(request):
 	if request.method=='POST':
 		forms=FormCliente(request.POST)
 		if forms.is_valid():
-			forms.save()
-			cod=Cliente.objects.latest('id')#ultimo regitro
+			datos = forms.save(commit=False)
+			datos.id
+			datos.save()
+			""" 
 			request.session['sesion'] = []#CREO UNA VARIABLE DE SESSION
 			id_persona = request.session['sesion']
 			id_persona.append(cod.id)
-			request.session['sesion'] = id_persona
-			return HttpResponse("Registro Exitoso.")
+			request.session['sesion'] = id_persona """
+			return redirect('DetalleCliente/'+str(datos.id)+'/')
 	else:
 		forms=FormCliente()
 
@@ -76,6 +78,25 @@ def RegisterNewProductAndResult(request, id):#(id_cliente)
 		formR=FormResultado()
 	return render(request,'cliente/RegistrarMuestra.html',{'forms':forms,'formR':formR,'cliente':cliente})
 
+
+def UpdateProduct(request, id_producto):
+	dato = Producto.objects.get(id=int(id_producto))
+	if request.method == 'POST':
+		forms = FormProductoUpdate(request.POST, instance=dato)
+		if forms.is_valid():
+			forms.save()
+			return HttpResponseRedirect('/DetalleCliente/'+str(dato.Cliente_id))
+	else:
+		forms = FormProductoUpdate(instance=dato)
+	return render(request, 'cliente/UpdateProduct.html', {'forms': forms, 'dato': dato})
+
+def RestoreProduct(request, id_producto):
+	producto = Producto.objects.get(id=int(id_producto))
+	producto.estado=True
+	producto.save()
+	return HttpResponseRedirect('/DetalleCliente/'+str(producto.Cliente_id)+'/')
+	#return HttpResponse("Registro Exitoso.")
+
 def LitarElementos(request):
 	datos = Elemento.objects.all().order_by('-id')
 	dic={
@@ -132,3 +153,6 @@ def deleteResult(request, id_result):
 	result.delete()
 	return RegisterResultados(request, id_product)
 
+def printCertify(request, idProductos):
+	print(idProductos)
+	return HttpResponse()
