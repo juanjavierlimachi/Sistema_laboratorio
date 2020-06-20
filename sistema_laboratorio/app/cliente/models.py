@@ -24,7 +24,7 @@ class Producto(models.Model):
 	Lote = models.CharField(max_length=150)
 	Cliente = models.ForeignKey(Cliente, on_delete = models.CASCADE)	
 	Usuario=models.ForeignKey(User,on_delete = models.CASCADE)
-	estado=models.BooleanField(default=True)
+	estado=models.BooleanField(default=True, help_text="Desactive esta casilla para dar de baja este producto")
 	fecha_registro = models.DateTimeField(auto_now_add=True)
 	def __str__(self):
 		return self.Lote

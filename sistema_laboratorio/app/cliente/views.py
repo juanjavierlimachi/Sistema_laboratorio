@@ -12,13 +12,15 @@ def NewPersona(request):
 	if request.method=='POST':
 		forms=FormCliente(request.POST)
 		if forms.is_valid():
-			forms.save()
-			cod=Cliente.objects.latest('id')#ultimo regitro
+			datos = forms.save(commit=False)
+			datos.id
+			datos.save()
+			""" 
 			request.session['sesion'] = []#CREO UNA VARIABLE DE SESSION
 			id_persona = request.session['sesion']
 			id_persona.append(cod.id)
-			request.session['sesion'] = id_persona
-			return HttpResponse("Registro Exitoso.")
+			request.session['sesion'] = id_persona """
+			return redirect('DetalleCliente/'+str(datos.id)+'/')
 	else:
 		forms=FormCliente()
 
@@ -76,6 +78,25 @@ def RegisterNewProductAndResult(request, id):#(id_cliente)
 		formR=FormResultado()
 	return render(request,'cliente/RegistrarMuestra.html',{'forms':forms,'formR':formR,'cliente':cliente})
 
+
+def UpdateProduct(request, id_producto):
+	dato = Producto.objects.get(id=int(id_producto))
+	if request.method == 'POST':
+		forms = FormProductoUpdate(request.POST, instance=dato)
+		if forms.is_valid():
+			forms.save()
+			return HttpResponseRedirect('/DetalleCliente/'+str(dato.Cliente_id))
+	else:
+		forms = FormProductoUpdate(instance=dato)
+	return render(request, 'cliente/UpdateProduct.html', {'forms': forms, 'dato': dato})
+
+def RestoreProduct(request, id_producto):
+	producto = Producto.objects.get(id=int(id_producto))
+	producto.estado=True
+	producto.save()
+	return HttpResponseRedirect('/DetalleCliente/'+str(producto.Cliente_id)+'/')
+	#return HttpResponse("Registro Exitoso.")
+
 def LitarElementos(request):
 	datos = Elemento.objects.all().order_by('-id')
 	dic={
@@ -132,3 +153,27 @@ def deleteResult(request, id_result):
 	result.delete()
 	return RegisterResultados(request, id_product)
 
+def printCertify(request, idProductos):
+	idProductos = idProductos.split(',')
+	idProductos = list(map(int,idProductos))
+	productos = Producto.objects.filter(estado = True)
+	resultados = Resultado.objects.filter(estado = True).order_by('Elemento')
+
+	#consulta = Producto.objects.raw('SELECT * FROM clientes_productos')
+	for id_producto in idProductos:
+		getProduct = Producto.objects.get(id = int(id_producto))
+		print(id_producto)
+		results=Resultado.objects.filter(producto_id=getProduct.id)
+		#print(results)
+		#(getProduct,results)
+		
+	return render(request,'cliente/printCertify.html',{'idProductos':idProductos, 'productos':productos, 'resultados':resultados,'getProduct':getProduct})
+
+
+def showCertify(getProduct):
+	results=Resultado.objects.filter(producto_id=getProduct.id)
+	print('holas')
+	return HttpResponse(results)
+
+def detailReport(request):
+	return render(request,'cliente/detailReport.html')
