@@ -176,4 +176,5 @@ def showCertify(getProduct):
 	return HttpResponse(results)
 
 def detailReport(request):
-	return render(request,'cliente/detailReport.html')
+	clients=Cliente.objects.filter(estado=True)
+	return render(request,'cliente/detailReport.html',{'clients':clients})
