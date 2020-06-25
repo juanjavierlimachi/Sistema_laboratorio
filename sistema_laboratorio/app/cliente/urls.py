@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from sistema_laboratorio.app.cliente import views
 from django.conf.urls import url
+from . import views
 urlpatterns = [
 #Elememtos
 	path('LitarElementos/',views.LitarElementos, name='list-element'),
@@ -24,5 +25,6 @@ urlpatterns = [
 #reportes
 	path('detailReport',views.detailReport),
 	url(r'^print-certify/(?P<idProductos>[^/]+)/$',views.printCertify),
-	#path('print-certify/(?P<idProductos>[^/]+)/',views.printCertify),
+	#Under Review
+	url(r'^report-analisis/(?P<idProductos>[^/]+)/',views.ReportAnalisis.as_view(), name='reporteAnalisis'),
 ]

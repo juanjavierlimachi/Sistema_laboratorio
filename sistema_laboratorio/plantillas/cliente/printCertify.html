@@ -1,32 +1,92 @@
-
-<div id="printCertify">
-    <strong>Perteneciente a: </strong> {{getProduct.Cliente.Nombre|upper}}
-    <table border="1">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes</title>
+    <style>
+        table{font-size: 4;}
+        table td tr{padding: 3px;}
+        p{text-align: center;}
+    </style>
+</head>
+<body>
+    
+    <table>
         <thead>
-            <th>Fecha</th>
-            <th>Lote</th>
-            <th></th>
+            <th colspan="2" style="font-size: 18px;">
+                <br>REPORTE DE
+            </th>
         </thead>
-        <tbody>
-            {% for i in idProductos %}
-                {% for producto in productos %}
-                    {% if i == producto.id %}
-                        <tr>
-                            <td>{{producto.fecha_registro|date:"d M Y"}}</td>
-                            <td>{{producto.Lote}}</td>
-                            {% for resultado in resultados %}
-                                {% if resultado.producto.id == producto.id %}
-                                    <td>{{resultado.Elemento.Abreviatura}} {{resultado.Resultado}}</td>
+        <thead>
+            <th colspan="2" style="font-size: 18px;">
+                ANÁLISIS
+            </th>
+        </thead>
+        <tr>
+            <td>
+               
+            </td>
+        </tr>
+        <tr>
+            <td>
+               
+            </td>
+        </tr>
+        <tr>
+            <td width="100px"></td>
+            <td>
+                <br><strong>Perteneciente a: </strong> {{getProduct.Cliente.Nombre|upper}}
+            </td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td width="100px"></td>
+            <td>
+                <table border="0.5" style="width: 60%; margin: auto; margin-top: 100px;">
+                    <thead>
+                        <th>Fecha</th>
+                        <th>Lote</th>
+                        <th>Resultados</th>
+                    </thead>
+                    <tbody>
+                        {% for i in idProductos %}
+                            {% for producto in productos %}
+                                {% if i == producto.id %}
+                                    <tr>
+                                        <td>{{producto.fecha_registro|date:"d M Y"}}</td>
+                                        <td>{{producto.Lote}}</td>
+                                        <td>
+                                        {% for resultado in resultados %}
+                                            {% if resultado.producto.id == producto.id %}
+                                                {{resultado.Elemento.Abreviatura}} {{resultado.Resultado}}
+                                            {% endif %}
+                                        {% endfor %} 
+                                        </td>
+                                    </tr>
                                 {% endif %}
                             {% endfor %}
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            {% endfor %}
-        </tbody>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+            <td width="100px"></td>
+        </tr>
+    </table><br>
+    <table>
+        <tr>
+            <td width="100px"></td>
+            <td>
+                <strong>Fecha:</strong> Potosí {{date_today}}<br>
+            </td>
+        </tr>
+        <tr>
+            <td width="100px"></td>
+            <td>
+                <strong>Gefe de Laboratorio:</strong> {{usuario}}
+            </td>
+        </tr>
     </table>
-    <footer>
-        <strong>Fecha: Potosí {{now}}</strong><br>
-        <strong>Gefe de Laboratorio: {{user.first_name|upper}}</strong>
-    </footer>
-</div>
+</body>
+</html>
