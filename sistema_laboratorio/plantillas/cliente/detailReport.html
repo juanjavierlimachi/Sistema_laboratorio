@@ -15,8 +15,9 @@
 		  <input type="email" class="form-control" name="final" id="fin" placeholder="DD/MM/AA">
 		</div>
 		<select name="" id="" class="selectpicker" data-size="5" data-width="fit">
+			<option value="0">elegir cliente</option>
 			{% for c in clients %}
-			<option value="">elegir cliente</option>
+			<option value="{c.id}">{{c.Nombre|upper}}</option>
 			{% endfor %}
 		</select>
 		<button class="btn btn-success" data-toggle="modal" data-target="#exampleModal" 

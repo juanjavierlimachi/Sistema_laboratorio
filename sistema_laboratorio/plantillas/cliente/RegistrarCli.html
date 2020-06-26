@@ -32,7 +32,7 @@
 			</td>
 			<td>{{i.Nombre}}</td>
 			<td>{{i.Direccion}}</td>
-			<td>{{i.Telefono}}</td>
+			<td>{{i.Telefono|default_if_none:"--"}}</td>
 			<td>{% if i.Particular %}Particular {% else %} Empresa{% endif %}</td>
 			<td>{{i.fecha_registro|date:"l d M Y"}}</td>
     </tr>
