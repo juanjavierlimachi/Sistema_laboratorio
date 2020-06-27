@@ -10,4 +10,7 @@ urlpatterns = [
 	path('VerUsers',views.VerUsers),
 	path('changePassword',views.ChangePassword),
 	path('updateUser',views.updateUser),
+	path('show-status-user/<int:id_user>/',views.showStatusUser),
+	path('disable-user/<int:id_user>',views.disableUser),
+	path('change-rol-user/<int:id_user>',views.changeRolUser),
 ]

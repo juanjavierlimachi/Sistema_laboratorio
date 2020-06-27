@@ -90,3 +90,33 @@ def ChangePassword(request):
 	else:
 		form=ChangePasswordForm()
 	return render(request,'inicio/changePassword.html',{'form':form})
+
+
+def showStatusUser(request, id_user):
+	get_user = User.objects.get(id = id_user)
+	return render(request,'inicio/showStatusUser.html',{'get_user':get_user})
+
+def disableUser(request, id_user):
+	if request.method == 'POST':
+		get_user = User.objects.get(id = id_user)
+		get_user.is_active=True
+		get_user.is_staff=False
+		get_user.is_superuser=False
+		get_user.save()
+		return HttpResponse('usuario Inhabilitado')
+
+def changeRolUser(request, id_user):
+	if request.method == 'POST':
+		get_user = User.objects.get(id = id_user)
+		if request.POST['option'] == 'super':
+			get_user.is_active=True
+			get_user.is_staff=True
+			get_user.is_superuser=True
+			get_user.save()
+			return HttpResponse('superuser')
+		if request.POST['option'] == 'user':
+			get_user.is_active=True
+			get_user.is_staff=True
+			get_user.is_superuser=False
+			get_user.save()
+			return HttpResponse('usuario')

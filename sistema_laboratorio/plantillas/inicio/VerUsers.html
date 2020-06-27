@@ -1,9 +1,9 @@
 <script type="text/javascript">
-	function CrearUsuarios(){
-		$("#exampleModal .modal-title").text("REGISTRAR NUEVO USUARIO");
+	function gestiosUsuarios(route,title){
+		$("#exampleModal .modal-title").text(title);
         $.ajax({
           type:'GET',
-          url:'/register',
+          url:route,
           success:function(resp){
             $(".modal-body").html(resp);
           }
@@ -14,7 +14,7 @@
 <div class="table-responsive">
 
 <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" 
-  		onclick="CrearUsuarios()"><span class="fa fa-database">
+  		onclick="gestiosUsuarios('/register','REGISTRAR NUEVO USUARIO')"><span class="fa fa-database">
   			Registrar Usuario
   		</span></button>
 	<h4 colspan="6" align="center"><strong>LISTA DE USUARIOS REGISTRADOS EN EL SISTEMA</strong></h4>
@@ -26,7 +26,9 @@
 		<th>NOMBRE COMPLETO</th>
 		<th>CORREO ELECTRONICO</th>
 		<th>FECHA DE REGISTRO</th>
-		
+		{% if user.is_superuser %}
+			<th>ESTADO</th>
+		{% endif %}
 </thead >
 
 {% for i in datos %}
@@ -38,6 +40,21 @@
 			<td>{{i.get_full_name|upper}}</td>
 			<td>{{i.email}}</td>
 			<td>{{i.date_joined|date:"l d M Y"}}</td>
+			{% if user.is_superuser %}
+				{% if i.is_superuser %}
+				<td>
+					<button href="#" class="btn btn-success btn-xs" onclick="gestiosUsuarios('show-status-user/{{i.id}}','PRIVILEGIOS DEL USUARIO');" title="Dar de Baja" data-toggle="modal" data-target="#exampleModal">Estado</button>
+				</td>
+				{% else %}
+				{% if i.is_staff %}
+					<td><button href="#" class="btn btn-warning btn-xs" onclick="gestiosUsuarios('show-status-user/{{i.id}}','PRIVILEGIOS DEL USUARIO');" title="Dar de Baja" data-toggle="modal" data-target="#exampleModal">Estado</button></td>
+				{% else %}
+					{% if i.is_active %}
+						<td><button href="#" class="btn btn-danger btn-xs" onclick="gestiosUsuarios('show-status-user/{{i.id}}','PRIVILEGIOS DEL USUARIO');" title="Dar de Baja" data-toggle="modal" data-target="#exampleModal">Estado</button></td>
+					{% endif %}
+					{% endif %}
+				{% endif %}
+			{% endif %}
 		</tr>
 	{% empty %}
 	<tr> <td colspan="6" align="center"><strong>No se encontró registros</strong></td> </tr>
