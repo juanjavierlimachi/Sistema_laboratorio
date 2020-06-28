@@ -1,0 +1,71 @@
+<meta charset="utf-8">
+<div class="table-responsive">
+    <table style="font-size: 5;" class="table table-hover table-striped table-bordered dt-responsive datatable">
+        <tr>
+            <td align="center" colspan="4">DETALLE DE ANÁLISIS DE MINERALES<br></td>
+        </tr>
+        {% if cliente %}
+        <tr>
+            <td align="center" colspan="4">PERTENECIENTE A: {{cliente.Nombre|upper}}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td align="center" colspan="4">DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}<br></td>
+        </tr>
+        <thead>
+        <tr>
+            <th style="width: 15%;">Fecha</th>
+            <th>Lote</th>
+            <th>Resultados</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for producto in products %}
+                <tr>
+                    <td align="center">{{producto.fecha_registro|date:"d M Y"}}</td>
+                    <td align="center">{{producto.Lote}}</td>
+                    <td colspan="2">
+                    {% for resultado in results %}
+                        {% if resultado.producto.id == producto.id %}
+                            {{resultado.Elemento.Abreviatura}} {{resultado.Resultado}}
+                        {% endif %}
+                    {% endfor %}
+                    </td>
+                </tr>
+            {% empty %}
+            <tr><td colspan="4" align="center"><h2>No hay registros</h2></td></tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="3">
+
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">TOTAL GENERAL : {{total_general}} ENSAYOS REALIZADOS</td>
+            </tr>
+            <tr>
+                <td colspan="4" align="center"><br>{{date_today}}</td>
+            </tr>
+            <tr>
+                <tr><td></td></tr>
+                <tr><td></td></tr>
+                <tr><td></td></tr>
+                <td colspan="4" align="center">{{usuario|title}}</td>
+            </tr>
+            <tr>
+                <td colspan="4" align="center">
+                    JEFE DE LABORATORIO
+                </td>
+            </tr>
+        </tfoot>
+</table>
+</div>
