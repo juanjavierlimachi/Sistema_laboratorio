@@ -4,10 +4,10 @@
 <form class="form-inline" method="POST" id="Busqueda">{% csrf_token %}
 	<div class="form-group">
 		<label for="">Desde:</label>
-		<input type="" class="form-control" name="inicio" id="ini" placeholder="DD/MM/AA" style="width: 12% !important;">
+		<input type="" class="form-control" autocomplete="off" name="inicio" id="ini" placeholder="DD/MM/AA" style="width: 12% !important;">
 		<label for="">Hasta:</label>
-		<input type="" class="form-control" name="final" id="fin" placeholder="DD/MM/AA" style="width: 12% !important;">
-		<select name="" id="" class=" form-control" data-size="5" data-width="fit">
+		<input type="" class="form-control" autocomplete="off" name="final" id="fin" placeholder="DD/MM/AA" style="width: 12% !important;">
+		<select name="cliente" id="cliente" class=" form-control" data-size="5" data-width="fit">
 			<option value="0">Elegir cliente</option>
 			{% for c in clients %}
 			<option value="{{c.id}}">{{c.Nombre|upper}}</option>
@@ -18,16 +18,29 @@
 			Resultado
 		</span>
 		</button>
-		<button class="btn btn-warning" data-toggle="modal" data-target="#exampleModal" 
-			onclick="listResult()"><span class="fa fa-database">
-				Imprimir
-			</span>
-		</button>
+		<a href="#" button type="button" onclick="printReportGeneral()"class="btn btn-warning">Imprimir</a>
 	</div>	
 </form>  
 <div class="table-responsive">      
 </div>
 <script type="text/javascript">
+	function printReportGeneral(){
+		var inicio = $("#ini").val();
+		var fin = $("#fin").val();
+		var clients_id = $("#cliente").val();
+		if(inicio =='' || fin =='' || !isNaN(inicio) || !isNaN(fin) ){
+			alert("Por favor Ingrese la fecha correctamente.");
+			$("#ini").focus();
+			return false
+		}
+		else{
+			let fecha_inicio = inicio.split('/');//convert it to an array
+			let a = fecha_inicio[0]+"-"+fecha_inicio[1]+"-"+fecha_inicio[2];
+			let fecha_final = fin.split('/')
+			let b = fecha_final[0]+"-"+fecha_final[1]+"-"+fecha_final[2];
+			window.open("print-report-general/"+clients_id+"/"+a+"/"+b);
+		}
+	}
     $( function() {
         console.log("bien");
     $( "#ini" ).datepicker({

@@ -201,6 +201,41 @@ def detailReport(request):
 	clients=Cliente.objects.filter(estado=True)
 	return render(request,'cliente/detailReport.html',{'clients':clients})
 
+
+def printReportGeneral(request, clients_id, fecha_inicio, fecha_fin):
+	fecha_inicio = datetime.strptime(fecha_inicio,"%d-%m-%Y")
+	fecha_fin = datetime.strptime(fecha_fin,"%d-%m-%Y")
+	fecha_fin = fecha_fin + timedelta(days=1)
+	if str(fecha_inicio) > str(fecha_fin):
+		return HttpResponse("Error: La Fecha Inicio No pueder ser Mayor a la Fecha Final.")
+	if int(clients_id) == 0:# if you don't choose any customer
+		cliente = False
+		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
+	else:
+		cliente = Cliente.objects.get(id=int(clients_id))
+		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))	
+	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True).order_by('Elemento')
+	total_general = 0
+	for product in products:
+		for result in results:
+			print(product.id)
+			if int(result.producto.id) == int(product.id):
+				total_general = total_general + 1
+
+	dic={
+		'cliente':cliente,
+		'products':products,
+		'results':results,
+		'total_general':total_general,
+		'fecha_inicio':fecha_inicio.date(),
+		'fecha_fin':fecha_fin.date() - timedelta(days=1),
+		'date_today':datetime.now(),
+		'usuario':request.user.first_name.title(),
+		'pagesize':'letter'
+	}
+	html = render_to_string('cliente/printReportGeneral.html',dic)
+	return generar_pdf(html)
+
 class ReportAnalisis(View):
 	def cabecera(self,pdf):
 		#Utilizamos el archivo logo_django.png que está guardado en la carpeta media/imagenes
