@@ -38,14 +38,14 @@ function detalleElement(route,title){
 			<td>
 			{{forloop.counter}}       	
 			</td>
-			<td>{{i.Nombre_del_Elemento|upper}}</td>
-			<td>{{i.Abreviatura|upper}}</td>
+			<td>{{i.Nombre_del_Elemento|title}}</td>
+			<td>{{i.Abreviatura}}</td>
 			<td>{{i.fecha_registro|date:"l d M Y"}}</td>
 			<td>
                 {% if i.estado %}
-                    <button type="button" onclick="detalleElement('update-elemento/{{ i.id }}','Editar Elemento')" class="btn btn-info" data-toggle="modal" data-target="#exampleModal">Editar</button>
+                    <button type="button" onclick="detalleElement('update-elemento/{{ i.id }}','Editar Elemento')" class="btn btn-info btn-xs" data-toggle="modal" data-target="#exampleModal">Editar</button>
                     {% else %}
-                    <button type="button" onclick="restoreElement('/restore-elemento/{{ i.id }}','Se restauro el elemento')" class="btn btn-danger">Restaurar</button>
+                    <button type="button" onclick="restoreElement('/restore-elemento/{{ i.id }}','Se restauro el elemento')" class="btn btn-danger btn-xs">Restaurar</button>
                 {% endif %}
             </td>
 		</tr>
