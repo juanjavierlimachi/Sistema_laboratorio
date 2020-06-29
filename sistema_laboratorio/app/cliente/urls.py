@@ -28,4 +28,5 @@ urlpatterns = [
 	url(r'^print-report-general/(?P<clients_id>\d+)/(?P<fecha_inicio>[^/]+)/(?P<fecha_fin>[^/]+)/$',views.printReportGeneral),
 	#Under Review
 	url(r'^report-analisis/(?P<idProductos>[^/]+)/',views.ReportAnalisis.as_view(), name='reporteAnalisis'),
+	url(r'^report-general/(?P<clients_id>\d+)/(?P<fecha_inicio>[^/]+)/(?P<fecha_fin>[^/]+)/$',views.reportGeneral),
 ]

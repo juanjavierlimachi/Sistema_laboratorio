@@ -1,7 +1,4 @@
-
-<h2 colspan="5" align="center">DETALLE DE ANALISIS DE MINERALES</h2>
-
-<form class="form-inline" method="POST" id="Busqueda">{% csrf_token %}
+<form class="form-inline" method="POST" id="Busqueda"><br>{% csrf_token %}
 	<div class="form-group">
 		<label for="">Desde:</label>
 		<input type="" class="form-control" autocomplete="off" name="inicio" id="ini" placeholder="DD/MM/AA" style="width: 12% !important;">
@@ -13,34 +10,57 @@
 			<option value="{{c.id}}">{{c.Nombre|upper}}</option>
 			{% endfor %}
 		</select>
-		<button class="btn btn-success" data-toggle="modal" data-target="#exampleModal" 
-		onclick="listResult()"><span class="fa fa-database">
-			Resultado
-		</span>
-		</button>
+		<a href="#" button type="button" onclick="ReporteGeneral()"class="btn btn-success">
+		<span class="fa fa-database">Resultado</span>
+		</a>
 		<a href="#" button type="button" onclick="printReportGeneral()"class="btn btn-warning">Imprimir</a>
 	</div>	
 </form>  
-<div class="table-responsive">      
-</div>
+<h2 colspan="5" align="center"><br> DE ANALISIS DE MINERALES</h2>
+<div class="table-responsive" id="report"> </div>
 <script type="text/javascript">
 	function printReportGeneral(){
-		var inicio = $("#ini").val();
-		var fin = $("#fin").val();
-		var clients_id = $("#cliente").val();
+		var get_fecha = FechaValidar($("#ini").val(), $("#fin").val(), $("#cliente").val());
+		if(get_fecha.length > 0)
+			window.open("print-report-general/"+get_fecha[0]+"/"+get_fecha[1]+"/"+get_fecha[2]);
+		else
+			return false;
+	}
+	function ReporteGeneral(){
+		var get_fecha = FechaValidar($("#ini").val(), $("#fin").val(), $("#cliente").val());
+		if(get_fecha.length > 0){
+			$.ajax({
+				type:'GET',
+				url:'report-general/'+get_fecha[0]+'/'+get_fecha[1]+'/'+get_fecha[2]+'/',
+				success:function(resp){
+				$("#report").html(resp);
+				}
+        	});
+		}
+		else{
+			return false;
+		}			
+	}
+	function FechaValidar(f_i, f_f, user){
+		var inicio = f_i;
+		var fin = f_f;
+		var clients_id = user;
+		var get_fecha = [];
 		if(inicio =='' || fin =='' || !isNaN(inicio) || !isNaN(fin) ){
 			alert("Por favor Ingrese la fecha correctamente.");
 			$("#ini").focus();
-			return false
+			return get_fecha;
 		}
 		else{
 			let fecha_inicio = inicio.split('/');//convert it to an array
 			let a = fecha_inicio[0]+"-"+fecha_inicio[1]+"-"+fecha_inicio[2];
-			let fecha_final = fin.split('/')
+			let fecha_final = fin.split('/');
 			let b = fecha_final[0]+"-"+fecha_final[1]+"-"+fecha_final[2];
-			window.open("print-report-general/"+clients_id+"/"+a+"/"+b);
+			get_fecha.push(clients_id, a, b);
+			return get_fecha;
 		}
 	}
+
     $( function() {
         console.log("bien");
     $( "#ini" ).datepicker({
