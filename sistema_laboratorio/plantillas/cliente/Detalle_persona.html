@@ -44,7 +44,9 @@
 		<td>
 			{% if i.estado %}
 			<button type="button" class="btn btn-success btn-xs" onclick="detalleClient('/RegisterResultados/{{i.id}}','REGISTRAR MUESTRA DE MINERAL DE: {{i.Cliente.Nombre|upper}}')" data-toggle="modal" data-target=".bd-example-modal-lg">Resultados</button>
-			<button type="button" class="btn btn-info btn-xs" onclick="detalleClient('update-product/{{i.id}}','Editar el paquete: {{i.Lote|upper}}')" data-toggle="modal" data-target="#exampleModal">Editar</button>
+				{% if user.is_superuser %}
+					<button type="button" class="btn btn-info btn-xs" onclick="detalleClient('update-product/{{i.id}}','Editar el paquete: {{i.Lote|upper}}')" data-toggle="modal" data-target="#exampleModal">Editar</button>
+				{% endif %}
 			{% else %}
 			<button type="button" class="btn btn-danger btn-xs" onclick="restoreProduct('/restore-producto/{{i.id}}',' ')">Restaurar</button>
 			{% endif %}

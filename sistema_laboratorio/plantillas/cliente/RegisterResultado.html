@@ -55,8 +55,10 @@
           <br>
           {{i.Resultado}}
           <br>
-          <a href="#" type="button" title="Eliminar resultado" onclick="deleteRresult('/delite-result/{{i.id}}')">X</a>
-        </div>
+          {% if user.is_superuser %}
+            <a href="#" type="button" title="Eliminar resultado" onclick="deleteRresult('/delite-result/{{i.id}}')">X</a>
+          {% endif %}  
+          </div>
       {% endfor %}
     </div>
     </td>
@@ -70,8 +72,8 @@
         <div class="col-md-6 col-md-offset-4">
         <button type="submit" class="btn btn-primary">Registrar</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-        <button type="reset" class="btn btn-warning">Borrar</button>
-        </div>
+        <a type="button" target="_blank" href="print-certify/{{getProduct.id}}/" class="btn btn-warning">Imprimir</a>
+      </div>
       </div>
   </form>
 </div>
