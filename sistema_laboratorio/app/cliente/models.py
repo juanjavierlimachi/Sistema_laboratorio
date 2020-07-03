@@ -12,6 +12,15 @@ class Cliente(models.Model):
 	def __str__(self):
 		return self.Nombre
 
+class Codigo(models.Model):
+	cliente = models.ForeignKey(Cliente, on_delete = models.CASCADE)
+	usuario = models.ForeignKey(User, on_delete = models.CASCADE)
+	estado=models.BooleanField(default=True)
+	fecha_update = models.DateTimeField(auto_now=True)
+	fecha_registro = models.DateTimeField(auto_now_add=True)
+	def __str__(self):
+		return "%s"%(self.cliente.Nombre)
+
 class Elemento(models.Model):
 	Nombre_del_Elemento = models.CharField(max_length=100, unique=True)
 	Abreviatura = models.CharField(max_length=100, unique=True)
@@ -24,6 +33,7 @@ class Producto(models.Model):
 	Lote = models.CharField(max_length=150)
 	Cliente = models.ForeignKey(Cliente, on_delete = models.CASCADE)	
 	Usuario=models.ForeignKey(User,on_delete = models.CASCADE)
+	codigo_ingreso = models.ForeignKey(Codigo, on_delete = models.CASCADE,blank=True, null=True)
 	estado=models.BooleanField(default=True, help_text="Desactive esta casilla para dar de baja este producto")
 	fecha_registro = models.DateTimeField(auto_now_add=True)
 	def __str__(self):

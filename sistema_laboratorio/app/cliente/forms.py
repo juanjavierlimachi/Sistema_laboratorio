@@ -14,7 +14,7 @@ class FormCliente(ModelForm):
 class FormProducto(ModelForm):
 	class Meta():
 		model = Producto
-		exclude=('estado','Usuario','Cliente')
+		exclude=('estado','Usuario','Cliente','codigo_ingreso')
 
 
 class FormProductoUpdate(ModelForm):

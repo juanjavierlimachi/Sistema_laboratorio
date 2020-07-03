@@ -18,7 +18,6 @@ urlpatterns = [
 	path('update-client/<int:id_cliente>/',views.updateClient),
 	path('NewPersona',views.NewPersona),
 	path('DetalleCliente/<int:id>/',views.DetalleCliente),
-	path('Detalle_persona',views.Detalle_persona),
 #resultados
 	path('RegisterResultados/<int:id_producto>/',views.RegisterResultados),
 	path('delite-result/<int:id_result>/',views.deleteResult),
@@ -29,4 +28,7 @@ urlpatterns = [
 	#Under Review
 	url(r'^report-analisis/(?P<idProductos>[^/]+)/',views.ReportAnalisis.as_view(), name='reporteAnalisis'),
 	url(r'^report-general/(?P<clients_id>\d+)/(?P<fecha_inicio>[^/]+)/(?P<fecha_fin>[^/]+)/$',views.reportGeneral),
+#ingresos
+	path('detalle-ingreso-cliente/<int:ingreso_id>/',views.DetalleIngresoCliente),
+	path('new-producto-a-ingreso/<int:ingreso_id>/',views.NewProductIngreso),
 ]
