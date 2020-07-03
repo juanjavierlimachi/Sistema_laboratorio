@@ -1,0 +1,30 @@
+{% load bootstrap %}
+ <script type="text/javascript">
+    $('#demo-form2').submit(function(e){
+        e.preventDefault();
+        var dato=$(this).serialize();
+        $.ajax({
+            type:'POST',
+            url:$(this).attr("action"),
+            data: dato,
+            success:function(resp){
+                 $(".x_content").html(resp);
+                $(".modal .close").click();
+            }
+        });
+    });
+ </script>
+
+ <form method="POST" action="/new-producto-a-ingreso/{{codigo.id}}/" role="form" class="form-horizontal" id="demo-form2" data-parsley-validate >{% csrf_token %}
+  <legend>Cliente: {{cliente.Nombre|upper}}</legend>          
+      {{forms|bootstrap_horizontal:'col-xs-4'}}
+      {{formR|bootstrap_horizontal:'col-xs-4'}}
+     <div class="ln_solid"></div>
+      <div class="form-group">
+        <div class="col-md-6 col-md-offset-4">
+        <button type="submit" class="btn btn-primary">Registrar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="reset" class="btn btn-warning">Borrar</button>
+        </div>
+      </div>
+  </form>

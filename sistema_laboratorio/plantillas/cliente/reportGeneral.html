@@ -32,6 +32,17 @@
         </tbody>
         <tfoot>
             <tr>
+                <td>TOTALES</td>
+                <td colspan="3">
+                    {% for i in getTotal.items %}       
+                        {% for k in i %}                    
+                            {{k}}
+                        {% endfor %}
+                               
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
                 <td colspan="4">TOTAL GENERAL : {{total_general}} ENSAYOS REALIZADOS</td>
             </tr>
             <tr>
