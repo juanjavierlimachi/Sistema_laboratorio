@@ -348,6 +348,12 @@ def reportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 	}
 	return render(request, 'cliente/reportGeneral.html',dic)
 
+
+def searchCode(request):
+	if request.method=='POST':
+		codigo = get_object_or_404(Codigo, pk=int(request.POST['search']))
+		return HttpResponseRedirect("/detalle-ingreso-cliente/"+str(codigo.id)+"/")
+
 class ReportAnalisis(View):
 	def cabecera(self,pdf):
 		#Utilizamos el archivo logo_django.png que está guardado en la carpeta media/imagenes
