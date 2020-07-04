@@ -14,7 +14,7 @@
 		<span class="fa fa-database">Resultado</span>
 		</a>
 		<a href="#" button type="button" onclick="printReportGeneral()"class="btn btn-warning">Imprimir Detalle</a>
-		<a href="#" button type="button" onclick="printReportGeneral()"class="btn btn-warning">Imprimir Total</a>
+		<a href="#" button type="button" onclick="printReportTotal()"class="btn btn-warning">Imprimir Total</a>
 	</div>	
 </form>  
 <h2 colspan="5" align="center"><br>REPORTE DE ANALISIS DE MINERALES</h2>
@@ -41,6 +41,13 @@
 		else{
 			return false;
 		}			
+	}
+	function printReportTotal(){
+		var get_fecha = FechaValidar($("#ini").val(), $("#fin").val(), $("#cliente").val());
+		if(get_fecha.length > 0)
+			window.open("print-report-total/"+get_fecha[0]+"/"+get_fecha[1]+"/"+get_fecha[2]);
+		else
+			return false;
 	}
 	function FechaValidar(f_i, f_f, user){
 		var inicio = f_i;

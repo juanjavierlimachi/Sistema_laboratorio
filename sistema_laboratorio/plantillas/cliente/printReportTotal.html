@@ -1,0 +1,60 @@
+<meta charset="utf-8">
+<div class="table-responsive">
+    <table style="font-size: 5;" class="table table-hover table-striped table-bordered dt-responsive datatable">
+        <tr>
+            <td align="center" colspan="4">DETALLE DE ANÁLISIS DE MINERALES<br></td>
+        </tr>
+        <tr>
+            <td align="center" colspan="4">DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}<br></td>
+        </tr>
+        {% if cliente %}
+        <tr>
+            <td align="center" colspan="4">Para: {{cliente.Nombre|upper}}</td>
+        </tr>
+        {% endif %}
+        <tbody>
+            {% for producto in products %}
+            {% empty %}
+            <tr><td colspan="4" align="center"><h2>No hay registros</h2></td></tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>ELEMENTO:</td>
+            </tr>
+            <tr>
+                <td>PRECIO POR:</td>
+            </tr>
+            <tr>
+                <td>CANTIDAD DE ANALISIS</td>
+                <td colspan="3">
+                    {% for i in getTotal.items %}       
+                        {% for k in i %}                    
+                            {{k}}
+                        {% endfor %}                           
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>SUBTOTALES:</td>
+            </tr>
+            <tr>
+                <td colspan="4">TOTAL GENERAL : {{total_general}} ENSAYOS REALIZADOS</td>
+            </tr>
+            <tr>
+                <td colspan="4" align="center"><br>{{date_today}}</td>
+            </tr>
+            <tr>
+                <tr><td></td></tr>
+                <tr><td></td></tr>
+                <tr><td></td></tr>
+                <td colspan="4" align="center">{{usuario|title}}</td>
+            </tr>
+            <tr>
+                <td colspan="4" align="center">
+                    JEFE DE LABORATORIO
+                </td>
+            </tr>
+        </tfoot>
+</table>
+</div>
