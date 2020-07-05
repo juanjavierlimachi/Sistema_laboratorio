@@ -49,7 +49,7 @@ class Precio(models.Model):
 		return self.Cliente.Nombre
 
 class Resultado(models.Model):
-	Resultado=models.FloatField(help_text="Engrese el resultado Ejem. 2.25")
+	Resultado=models.FloatField()
 	Elemento = models.ForeignKey(Elemento, on_delete = models.CASCADE)
 	producto=models.ForeignKey(Producto,on_delete = models.CASCADE)
 	estado=models.BooleanField(default=True)
