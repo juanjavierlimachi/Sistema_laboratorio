@@ -90,7 +90,8 @@ def DetalleIngresoCliente(request ,ingreso_id):
 	productos=Producto.objects.filter(codigo_ingreso=ingreso_id).order_by('-id')
 	dic={
 		'ingreso':ingreso,
-		'productos':productos
+		'productos':productos,
+		'results':getResult()
 	}
 	return render(request,'cliente/DetalleIngresoCliente.html',dic)
 
@@ -228,27 +229,20 @@ def deleteResult(request, id_result):
 	result.delete()
 	return RegisterResultados(request, id_product)
 
-def printCertify(request, idProductos):
-	idProductos = idProductos.split(',')
-	idProductos = list(map(int,idProductos))
-	productos = Producto.objects.filter(estado = True)
-	resultados = Resultado.objects.filter(estado = True).order_by('Elemento')
-	for id_producto in idProductos:
-		getProduct = Producto.objects.get(id = int(id_producto))
-		break
-	date_today = datetime.now().strftime("%d/%m/%Y")
-	print(request.user.first_name)
-	dic = {
-			'pagesize':'letter',
-			'idProductos':idProductos, 
-			'productos':productos,
-			'resultados':resultados,
-			'getProduct':getProduct,
-			'date_today':date_today,
-			'usuario':request.user.first_name.title()
-		 }
+def printCertify(request ,ingreso_id):
+	ingreso = get_object_or_404(Codigo, pk=ingreso_id)
+	productos=Producto.objects.filter(codigo_ingreso=ingreso_id).order_by('-id')
+	dic={
+		'ingreso':ingreso,
+		'productos':productos,
+		'results':getResult()
+	}
 	html=render_to_string('cliente/printCertify.html',dic)
 	return generar_pdf(html)
+
+def getResult():
+	result=Resultado.objects.all()
+	return result
 
 def generar_pdf(html):
 	resultado=io.BytesIO()
@@ -292,6 +286,35 @@ def printReportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 	html = render_to_string('cliente/printReportGeneral.html',dic)
 	return generar_pdf(html)
 
+def printReportTotal(request, clients_id, fecha_inicio, fecha_fin):
+	fecha_inicio = datetime.strptime(fecha_inicio,"%d-%m-%Y")
+	fecha_fin = datetime.strptime(fecha_fin,"%d-%m-%Y")
+	fecha_fin = fecha_fin + timedelta(days=1)
+	if str(fecha_inicio) > str(fecha_fin):
+		return HttpResponse("Error: La Fecha Inicio No pueder ser Mayor a la Fecha Final.")
+	if int(clients_id) == 0:# if you don't choose any customer
+		cliente = False
+		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
+	else:
+		cliente = Cliente.objects.get(id=int(clients_id))
+		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))	
+	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True).order_by('Elemento')
+	total_general = getTotalGeneral(products, results)
+	getTotal = getTotales(products, results)
+	dic={
+		'cliente':cliente,
+		'products':products,
+		'results':results,
+		'total_general':total_general,
+		'getTotal':getTotal,
+		'fecha_inicio':fecha_inicio.date(),
+		'fecha_fin':fecha_fin.date() - timedelta(days=1),
+		'date_today':datetime.now(),
+		'usuario':request.user.first_name.title(),
+		'pagesize':'letter'
+	}
+	html = render_to_string('cliente/printReportTotal.html',dic)
+	return generar_pdf(html)
 
 def getTotales(products, results):
 	getTotal = {}

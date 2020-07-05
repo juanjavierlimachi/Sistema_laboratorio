@@ -40,7 +40,13 @@
             <td>{{forloop.counter}}</td>
             <td>{{i.fecha_registro|date:"l d M Y"}}</td>
             <td>{{i.Lote|upper}}</td>
-            <td>{{i.ingreso.all.count}}</td>
+            <td>
+                {% for j in results %}       
+                    {% if j.producto_id == i.id %}
+                        {{j.Elemento.Abreviatura}}  {{j.Resultado}}
+                    {% endif %}
+                {% endfor %}
+            </td>
             <td>
                 {% if i.estado %}
                 <button type="button" class="btn btn-success btn-xs" onclick="detalleClient('/RegisterResultados/{{i.id}}','REGISTRAR MUESTRA DE MINERAL DE: {{i.Cliente.Nombre|upper}}')" data-toggle="modal" data-target=".bd-example-modal-lg">Resultados</button>
@@ -51,17 +57,17 @@
                 <button type="button" class="btn btn-danger btn-xs" onclick="restoreProduct('/restore-producto/{{i.id}}',' ')">Restaurar</button>
                 {% endif %}
             </td>
-            <td>
+           <!-- <td>
                 {% if i.estado %}
                 <input type="checkbox"  name="checks[]" value="{{i.id}}" id="id_product">
                 {% endif %}
-            </td>
+            </td>-->
         </tr>
         {% empty %}
         <tr> <td colspan="5" align="center"><strong>Aún no tiene paquetes registrados: registre aqui: </strong><a href="#" data-toggle="modal" id=myModal onclick="detalleClient('/detalle-ingreso-cliente/{{ingreso.id}}','')" data-target="#exampleModal">Registrar paquete</a></td> </tr>
         {% endfor %}
             {% if productos.count > 0 %}
-            <tr><td colspan="5"></td><td><button type="button" href="#" id="print"onclick="printCertify()" class="btn btn-warning" >Imprimir</button></td></tr>
+            <tr><td colspan="5"></td><td><button type="button" href="#" id="print"onclick="printCertify('/print-certify/{{ingreso.id}}','')" class="btn btn-warning" >Imprimir</button></td></tr>
             {% endif %}
         </tbody>
     </table>
@@ -109,11 +115,7 @@
           //console.log(str);
         
         });
-        function printCertify(){
-            if(listIdProduct.length === 0){
-                alert('Seleccione almenos un paquetes');
-            }else{
-                window.open("print-certify/"+listIdProduct+"/");
-            }
+        function printCertify(route){
+            window.open(route);
         }
     </script>
