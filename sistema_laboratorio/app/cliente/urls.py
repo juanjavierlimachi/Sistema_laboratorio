@@ -23,7 +23,7 @@ urlpatterns = [
 	path('delite-result/<int:id_result>/',views.deleteResult),
 #reportes
 	path('detailReport',views.detailReport),
-	url(r'^print-certify/(?P<idProductos>[^/]+)/$',views.printCertify),
+	path('print-certify/<int:ingreso_id>/',views.printCertify),
 	url(r'^print-report-general/(?P<clients_id>\d+)/(?P<fecha_inicio>[^/]+)/(?P<fecha_fin>[^/]+)/$',views.printReportGeneral),
 	url(r'^print-report-total/(?P<clients_id>\d+)/(?P<fecha_inicio>[^/]+)/(?P<fecha_fin>[^/]+)/$',views.printReportTotal),
 	#Under Review

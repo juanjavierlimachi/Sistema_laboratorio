@@ -90,7 +90,8 @@ def DetalleIngresoCliente(request ,ingreso_id):
 	productos=Producto.objects.filter(codigo_ingreso=ingreso_id).order_by('-id')
 	dic={
 		'ingreso':ingreso,
-		'productos':productos
+		'productos':productos,
+		'results':getResult()
 	}
 	return render(request,'cliente/DetalleIngresoCliente.html',dic)
 
@@ -228,27 +229,20 @@ def deleteResult(request, id_result):
 	result.delete()
 	return RegisterResultados(request, id_product)
 
-def printCertify(request, idProductos):
-	idProductos = idProductos.split(',')
-	idProductos = list(map(int,idProductos))
-	productos = Producto.objects.filter(estado = True)
-	resultados = Resultado.objects.filter(estado = True).order_by('Elemento')
-	for id_producto in idProductos:
-		getProduct = Producto.objects.get(id = int(id_producto))
-		break
-	date_today = datetime.now().strftime("%d/%m/%Y")
-	print(request.user.first_name)
-	dic = {
-			'pagesize':'letter',
-			'idProductos':idProductos, 
-			'productos':productos,
-			'resultados':resultados,
-			'getProduct':getProduct,
-			'date_today':date_today,
-			'usuario':request.user.first_name.title()
-		 }
+def printCertify(request ,ingreso_id):
+	ingreso = get_object_or_404(Codigo, pk=ingreso_id)
+	productos=Producto.objects.filter(codigo_ingreso=ingreso_id).order_by('-id')
+	dic={
+		'ingreso':ingreso,
+		'productos':productos,
+		'results':getResult()
+	}
 	html=render_to_string('cliente/printCertify.html',dic)
 	return generar_pdf(html)
+
+def getResult():
+	result=Resultado.objects.all()
+	return result
 
 def generar_pdf(html):
 	resultado=io.BytesIO()

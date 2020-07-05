@@ -36,7 +36,7 @@
         <tr>
             <td width="100px"></td>
             <td>
-                <br><strong>Perteneciente a: </strong> {{getProduct.Cliente.Nombre|upper}}
+                <br><strong>Perteneciente a: </strong> {{ingreso.cliente.Nombre|upper}}
             </td>
         </tr>
     </table>
@@ -51,22 +51,19 @@
                         <th>Resultados</th>
                     </thead>
                     <tbody>
-                        {% for i in idProductos %}
-                            {% for producto in productos %}
-                                {% if i == producto.id %}
-                                    <tr>
-                                        <td>{{producto.fecha_registro|date:"d M Y"}}</td>
-                                        <td>{{producto.Lote}}</td>
-                                        <td>
-                                        {% for resultado in resultados %}
-                                            {% if resultado.producto.id == producto.id %}
-                                                {{resultado.Elemento.Abreviatura}} {{resultado.Resultado}}
-                                            {% endif %}
-                                        {% endfor %} 
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
+                        {% for i in productos %}
+                        <tr>
+                            <td>{{i.fecha_registro|date:" d M Y"}}</td>
+                            <td>{{i.Lote|upper}}</td>
+                            <td>
+                                {% for j in results %}
+                                    
+                                    {% if j.producto_id == i.id %}
+                                        {{j.Elemento.Abreviatura}}  {{j.Resultado}}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
