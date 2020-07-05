@@ -55,9 +55,33 @@ def updateClient(request, id_cliente):
 def DetalleCliente(request,id):#id cliente
 	cliente = get_object_or_404(Cliente, pk=id)
 	productos=Producto.objects.filter(Cliente_id=id).order_by('-id')
+	Usuario=Producto(Usuario=request.user)
+	if request.method == 'POST':
+		forms=FormProducto(request.POST,instance=Usuario)
+		formR=FormResultado(request.POST)
+
+		if forms.is_valid() and formR.is_valid():
+			
+			ingreso_id = saveCodeEnten(request,id)#id del cliente
+			
+			datos = forms.save(commit=False)
+			datos.Cliente_id = int(id)
+			datos.codigo_ingreso_id = int(ingreso_id)
+			datos.save()#Guardo el Formulario Producto
+
+			Dato = formR.save(commit=False)
+			Dato.producto_id = int(datos.id)
+			Dato.save()#Guardo el Formulario resultado
+
+			return HttpResponseRedirect("/detalle-ingreso-cliente/"+str(ingreso_id)+"/")#retorna a la funcion DetalleCliente
+	else:
+		forms=FormProducto(instance=Usuario)
+		formR=FormResultado()
 	dic={
 		'cliente':cliente,
-		'productos':productos
+		'productos':productos,
+		'forms':forms,
+		'formR':formR
 	}
 	return render(request,'cliente/Detalle_persona.html',dic)
 
