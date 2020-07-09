@@ -48,21 +48,28 @@
                     <thead>
                         <th>Fecha</th>
                         <th>Lote</th>
-                        <th>Resultados</th>
+                        <th>Zinc</th>
+                        <th>Plata</th>
+                        <th>Plomo</th>
+                        <th>Estaño</th>
+                        <th>Cobre</th>
+                        <th>H2O</th>
                     </thead>
                     <tbody>
                         {% for i in productos %}
                         <tr>
                             <td>{{i.fecha_registro|date:" d M Y"}}</td>
                             <td>{{i.Lote|upper}}</td>
-                            <td>
-                                {% for j in results %}
-                                    
-                                    {% if j.producto_id == i.id %}
-                                        {{j.Elemento.Abreviatura}}  {{j.Resultado}}
-                                    {% endif %}
-                                {% endfor %}
-                            </td>
+                            {% for j in results %}       
+                                {% if j.producto_id == i.id %}
+                                    <td>{{j.Zinc}}</td>
+                                    <td>{{j.Plata}}</td>
+                                    <td>{{j.Plomo}}</td>
+                                    <td>{{j.Estanio}}</td>
+                                    <td>{{j.Cobre}}</td>
+                                    <td>{{j.H2O}}</td>
+                                {% endif %}
+                            {% endfor %}
                         </tr>
                         {% endfor %}
                     </tbody>

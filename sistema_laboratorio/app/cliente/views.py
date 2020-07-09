@@ -88,10 +88,32 @@ def DetalleCliente(request,id):#id cliente
 def DetalleIngresoCliente(request ,ingreso_id):
 	ingreso = get_object_or_404(Codigo, pk=ingreso_id)
 	productos=Producto.objects.filter(codigo_ingreso=ingreso_id).order_by('-id')
+	Usuario=Producto(Usuario=request.user)
+	if request.method == 'POST':
+		forms=FormProducto(request.POST,instance=Usuario)
+		formR=FormResultado(request.POST)
+
+		if forms.is_valid() and formR.is_valid():
+			
+			datos = forms.save(commit=False)
+			datos.Cliente_id = int(ingreso.cliente.id)
+			datos.codigo_ingreso_id = int(ingreso_id)
+			datos.save()#Guardo el Formulario Producto
+
+			Dato = formR.save(commit=False)
+			Dato.producto_id = int(datos.id)
+			Dato.save()#Guardo el Formulario resultado
+
+			return HttpResponseRedirect("/detalle-ingreso-cliente/"+str(ingreso_id)+"/")#retorna a la funcion DetalleCliente
+	else:
+		forms=FormProducto(instance=Usuario)
+		formR=FormResultado()
 	dic={
 		'ingreso':ingreso,
 		'productos':productos,
-		'results':getResult()
+		'results':getResult(),
+		'forms':forms,
+		'formR':formR
 	}
 	return render(request,'cliente/DetalleIngresoCliente.html',dic)
 
@@ -157,14 +179,18 @@ def RegisterNewProductAndResult(request, id):#(id_cliente)
 
 def UpdateProduct(request, id_producto):
 	dato = Producto.objects.get(id=int(id_producto))
+	result = Resultado.objects.get(producto_id=int(dato.id))
 	if request.method == 'POST':
 		forms = FormProductoUpdate(request.POST, instance=dato)
-		if forms.is_valid():
+		formR = FormResultUpdate(results.POST, instance=result)
+		if forms.is_valid() and formR.is_valid():
 			forms.save()
+			formR.save()
 			return HttpResponseRedirect('/DetalleCliente/'+str(dato.Cliente_id))
 	else:
 		forms = FormProductoUpdate(instance=dato)
-	return render(request, 'cliente/UpdateProduct.html', {'forms': forms, 'dato': dato})
+		formR = FormResultUpdate(instance=result)
+	return render(request, 'cliente/UpdateProduct.html', {'forms': forms,'formR':formR,'dato': dato})
 
 def RestoreProduct(request, id_producto):
 	producto = Producto.objects.get(id=int(id_producto))
@@ -269,14 +295,12 @@ def printReportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 		cliente = Cliente.objects.get(id=int(clients_id))
 		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))	
 	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True).order_by('Elemento')
-	total_general = getTotalGeneral(products, results)
-	getTotal = getTotales(products, results)
+	#total_general = getTotalGeneral(products, results)
+	#getTotal = getTotales(products, results)
 	dic={
 		'cliente':cliente,
 		'products':products,
 		'results':results,
-		'total_general':total_general,
-		'getTotal':getTotal,
 		'fecha_inicio':fecha_inicio.date(),
 		'fecha_fin':fecha_fin.date() - timedelta(days=1),
 		'date_today':datetime.now(),
@@ -350,15 +374,13 @@ def reportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 	else:
 		cliente = Cliente.objects.get(id=int(clients_id))
 		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))
-	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True).order_by('Elemento')
-	total_general = getTotalGeneral(products, results)
-	getTotal = getTotales(products, results)
+	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
+	#total_general = getTotalGeneral(products, results)
+	#getTotal = getTotales(products, results)
 	dic={
 			'cliente':cliente,
 			'products':products,
 			'results':results,
-			'total_general':total_general,
-			'getTotal':getTotal,
 			'fecha_inicio':fecha_inicio.date(),
 			'fecha_fin':fecha_fin.date() - timedelta(days=1),
 			'date_today':datetime.now(),

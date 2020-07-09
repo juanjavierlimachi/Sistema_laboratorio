@@ -20,7 +20,12 @@ class FormProducto(ModelForm):
 class FormProductoUpdate(ModelForm):
 	class Meta():
 		model = Producto
-		exclude=('Usuario','Cliente')
+		exclude=('Usuario','Cliente','codigo_ingreso')
+
+class FormResultUpdate(ModelForm):
+	class Meta():
+		model = Resultado
+		exclude=('estado','producto')
 
 
 class FormElemento(forms.ModelForm):
@@ -38,6 +43,3 @@ class FormResultado(ModelForm):
 	class Meta():
 		model = Resultado
 		exclude=('estado','producto')
-	def __init__(self, *args, **kwargs):
-		super(FormResultado, self).__init__(*args, **kwargs)
-		self.fields['Elemento'].queryset = Elemento.objects.filter(estado=True)

@@ -1,3 +1,9 @@
+<style>
+	form input{
+		width: 80px;
+	}
+</style>
+{% load bootstrap %}
 <div class="table-responsive">
     <div class="btn-group">
       <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle btn-sm" type="button" aria-expanded="false">OPCIONES    <span class="caret"></span>
@@ -27,12 +33,28 @@
                 {% endif %}</td>
         </tr>
     </table>
+    <div class="row">
+        <form method="POST" action="/detalle-ingreso-cliente/{{ingreso.id}}/" role="form" class="form-inline" id="formresult" data-parsley-validate >
+            {% csrf_token %}         
+             {{forms}}
+             {{formR}}
+             <div class="form-group row" style="margin-left: 5px;">
+               <button type="submit" class="btn btn-primary">Registrar</button>
+               <button type="reset" class="btn btn-warning">Borrar</button>
+             </div>
+         </form>
+        </div>
     <table class="table table-striped table-bordered">
         <thead  class="success">
             <th style="width: 3%;">Nro</th>
             <th>FECHA</th>
             <th>LOTE</th>
-    
+            <th>Zinc</th>
+            <th>Plata</th>
+            <th>Plomo</th>
+            <th>Estaño</th>
+            <th>Cobre</th>
+            <th>H2O</th>
         </thead >
         <tbody>
         {% for i in productos %}
@@ -40,16 +62,19 @@
             <td>{{forloop.counter}}</td>
             <td>{{i.fecha_registro|date:"l d M Y"}}</td>
             <td>{{i.Lote|upper}}</td>
-            <td>
-                {% for j in results %}       
-                    {% if j.producto_id == i.id %}
-                        {{j.Elemento.Abreviatura}}  {{j.Resultado}}
-                    {% endif %}
-                {% endfor %}
-            </td>
+            {% for j in results %}       
+                {% if j.producto_id == i.id %}
+                    <td>{{j.Zinc}}</td>
+                    <td>{{j.Plata}}</td>
+                    <td>{{j.Plomo}}</td>
+                    <td>{{j.Estanio}}</td>
+                    <td>{{j.Cobre}}</td>
+                    <td>{{j.H2O}}</td>
+                {% endif %}
+            {% endfor %}
             <td>
                 {% if i.estado %}
-                <button type="button" class="btn btn-success btn-xs" onclick="detalleClient('/RegisterResultados/{{i.id}}','REGISTRAR MUESTRA DE MINERAL DE: {{i.Cliente.Nombre|upper}}')" data-toggle="modal" data-target=".bd-example-modal-lg">Resultados</button>
+               <!--  <button type="button" class="btn btn-success btn-xs" onclick="detalleClient('/RegisterResultados/{{i.id}}','REGISTRAR MUESTRA DE MINERAL DE: {{i.Cliente.Nombre|upper}}')" data-toggle="modal" data-target=".bd-example-modal-lg">Resultados</button> -->
                     {% if user.is_superuser %}
                         <button type="button" class="btn btn-info btn-xs" onclick="detalleClient('update-product/{{i.id}}','Editar el paquete: {{i.Lote|upper}}')" data-toggle="modal" data-target="#exampleModal">Editar</button>
                     {% endif %}
@@ -73,9 +98,18 @@
     </table>
     </div>
     <script type="text/javascript">
-        $(document).ready(function(){
-           // $("#myModal").trigger("click");
-        } );
+        $('#formresult').submit(function(e){
+            e.preventDefault();
+            var dato=$(this).serialize();
+            $.ajax({
+                type:'POST',
+                url:$(this).attr("action"),
+                data: dato,
+                success:function(resp){
+                        $(".x_content").html(resp);
+                }
+            });
+        });
         function detalleClient(route,title){
             $(".modal-title").text(title);
             $.ajax({

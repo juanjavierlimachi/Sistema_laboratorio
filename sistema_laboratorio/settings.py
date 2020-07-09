@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'sistema_laboratorio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'laboratorio',
+        'NAME': 'lab',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

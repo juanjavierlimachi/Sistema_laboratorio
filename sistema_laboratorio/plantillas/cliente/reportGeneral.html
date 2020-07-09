@@ -11,20 +11,28 @@
         <tr>
             <th style="width: 15%;">Fecha</th>
             <th>Lote</th>
-            <th>Resultados</th>
+            <th>Zinc</th>
+            <th>Plata</th>
+            <th>Plomo</th>
+            <th>Estaño</th>
+            <th>Cobre</th>
+            <th>H2O</th>
         </tr>
         <tbody>
             {% for producto in products %}
                 <tr>
                     <td align="center">{{producto.fecha_registro|date:"d M Y"}}</td>
                     <td align="center">{{producto.Lote}}</td>
-                    <td colspan="2">
-                    {% for resultado in results %}
-                        {% if resultado.producto.id == producto.id %}
-                            {{resultado.Elemento.Abreviatura}} {{resultado.Resultado}}
+                    {% for j in results %}       
+                        {% if j.producto_id == producto.id %}
+                            <td>{{j.Zinc}}</td>
+                            <td>{{j.Plata}}</td>
+                            <td>{{j.Plomo}}</td>
+                            <td>{{j.Estanio}}</td>
+                            <td>{{j.Cobre}}</td>
+                            <td>{{j.H2O}}</td>
                         {% endif %}
                     {% endfor %}
-                    </td>
                 </tr>
             {% empty %}
             <tr><td colspan="4" align="center"><h2>No hay registros</h2></td></tr>
@@ -34,12 +42,6 @@
             <tr>
                 <td>TOTALES</td>
                 <td colspan="3">
-                    {% for i in getTotal.items %}       
-                        {% for k in i %}                    
-                            {{k}}
-                        {% endfor %}
-                               
-                    {% endfor %}
                 </td>
             </tr>
             <tr>
