@@ -2,21 +2,27 @@
 <div class="table-responsive">
     <table style="font-size: 5;" class="table table-hover table-striped table-bordered dt-responsive datatable">
         <tr>
-            <td align="center" colspan="4">DETALLE DE ANÁLISIS DE MINERALES<br></td>
+            <td align="center" colspan="8">DETALLE DE ANÁLISIS DE MINERALES<br></td>
         </tr>
         {% if cliente %}
         <tr>
-            <td align="center" colspan="4">PERTENECIENTE A: {{cliente.Nombre|upper}}</td>
+            <td align="center" colspan="8">PERTENECIENTE A: {{cliente.Nombre|upper}}</td>
         </tr>
         {% endif %}
         <tr>
-            <td align="center" colspan="4">DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}<br></td>
+            <td align="center" colspan="8">DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}<br></td>
         </tr>
         <thead>
         <tr>
             <th style="width: 15%;">Fecha</th>
             <th>Lote</th>
-            <th>Resultados</th>
+            
+            <th style="width: 10%;">Zinc</th>
+            <th style="width: 10%;">Plata</th>
+            <th style="width: 10%;">Plomo</th>
+            <th style="width: 10%;">Estaño</th>
+            <th style="width: 10%;">Cobre</th>
+            <th style="width: 10%;">H2O</th>
         </tr>
         </thead>
         <tbody>
@@ -24,16 +30,19 @@
                 <tr>
                     <td align="center">{{producto.fecha_registro|date:"d M Y"}}</td>
                     <td align="center">{{producto.Lote}}</td>
-                    <td colspan="2">
                     {% for resultado in results %}
-                        {% if resultado.producto.id == producto.id %}
-                            {{resultado.Elemento.Abreviatura}} {{resultado.Resultado}}
+                        {% if resultado.producto_id == producto.id %}
+                            <td align="center">{{resultado.Zinc|default_if_none:" "}}</td>
+
+                            <td align="center">{{resultado.Plata|default_if_none:" "}}</td>
+                            <td align="center">{{resultado.Plomo|default_if_none:" "}}</td>
+
+                            <td align="center">{{resultado.Estanio|default_if_none:" "}}</td>
+                            <td align="center">{{resultado.Cobre|default_if_none:" "}}</td>
+                            <td align="center">{{resultado.H2O|default_if_none:" "}}</td>
                         {% endif %}
                     {% endfor %}
-                    </td>
                 </tr>
-            {% empty %}
-            <tr><td colspan="4" align="center"><h2>No hay registros</h2></td></tr>
             {% endfor %}
         </tbody>
         <tfoot>
@@ -45,29 +54,28 @@
             </tr>
             <tr>
                 <td>TOTALES</td>
-                <td colspan="3">
+                <td colspan="4">
                     {% for i in getTotal.items %}       
                         {% for k in i %}                    
                             {{k}}
-                        {% endfor %}
-                            
+                        {% endfor %}   
                     {% endfor %}
                 </td>
             </tr>
             <tr>
-                <td colspan="4">TOTAL GENERAL : {{total_general}} ENSAYOS REALIZADOS</td>
+                <td colspan="8">TOTAL GENERAL : {{total_general}} ENSAYOS REALIZADOS</td>
             </tr>
             <tr>
-                <td colspan="4" align="center"><br>{{date_today}}</td>
+                <td colspan="8" align="center"><br>{{date_today}}</td>
             </tr>
             <tr>
                 <tr><td></td></tr>
                 <tr><td></td></tr>
                 <tr><td></td></tr>
-                <td colspan="4" align="center">{{usuario|title}}</td>
+                <td colspan="8" align="center">{{usuario|title}}</td>
             </tr>
             <tr>
-                <td colspan="4" align="center">
+                <td colspan="8" align="center">
                     JEFE DE LABORATORIO
                 </td>
             </tr>

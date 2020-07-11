@@ -44,16 +44,17 @@
         <tr>
             <td width="100px"></td>
             <td>
-                <table border="0.5" style="width: 60%; margin: auto; margin-top: 100px;">
+                <table style="width: 60%; margin: auto; margin-top: 100px;">
                     <thead>
                         <th>Fecha</th>
                         <th>Lote</th>
-                        <th>Zinc</th>
-                        <th>Plata</th>
-                        <th>Plomo</th>
-                        <th>Estaño</th>
-                        <th>Cobre</th>
-                        <th>H2O</th>
+                        <th style="width: 10%;">Zinc</th>
+                        <th style="width: 10%;">Plata</th>
+                        <th style="width: 10%;">Plomo</th>
+                        <th style="width: 10%;">Estaño</th>
+                        <th style="width: 10%;">Cobre</th>
+                        <th style="width: 10%;">H2O</th>
+                               
                     </thead>
                     <tbody>
                         {% for i in productos %}
@@ -62,12 +63,15 @@
                             <td>{{i.Lote|upper}}</td>
                             {% for j in results %}       
                                 {% if j.producto_id == i.id %}
-                                    <td>{{j.Zinc}}</td>
-                                    <td>{{j.Plata}}</td>
-                                    <td>{{j.Plomo}}</td>
-                                    <td>{{j.Estanio}}</td>
-                                    <td>{{j.Cobre}}</td>
-                                    <td>{{j.H2O}}</td>
+                                        <td align="center">{{j.Zinc|default_if_none:" "}}</td>
+
+                                        <td align="center">{{j.Plata|default_if_none:" "}}</td>
+                                        <td align="center">{{j.Plomo|default_if_none:" "}}</td>
+
+                                        <td align="center">{{j.Estanio|default_if_none:" "}}</td>
+                                        <td align="center">{{j.Cobre|default_if_none:" "}}</td>
+                                        <td align="center">{{j.H2O|default_if_none:" "}}</td>
+
                                 {% endif %}
                             {% endfor %}
                         </tr>
@@ -88,7 +92,7 @@
         <tr>
             <td width="100px"></td>
             <td>
-                <strong>Gefe de Laboratorio:</strong> {{usuario}}
+                <strong>Gefe de Laboratorio:</strong> {{usuario|title}}
             </td>
         </tr>
     </table>
