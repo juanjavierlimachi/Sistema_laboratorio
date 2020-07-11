@@ -261,7 +261,8 @@ def printCertify(request ,ingreso_id):
 	dic={
 		'ingreso':ingreso,
 		'productos':productos,
-		'results':getResult()
+		'results':getResult(),
+		'usuario':request.user.first_name.title()
 	}
 	html=render_to_string('cliente/printCertify.html',dic)
 	return generar_pdf(html)
@@ -294,12 +295,14 @@ def printReportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 	else:
 		cliente = Cliente.objects.get(id=int(clients_id))
 		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))	
-	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True).order_by('Elemento')
-	#total_general = getTotalGeneral(products, results)
-	#getTotal = getTotales(products, results)
+	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
+	total_general = getTotalGeneral(products, results)
+	getTotal = getTotales(products, results)
 	dic={
 		'cliente':cliente,
 		'products':products,
+		'total_general':total_general,
+		'getTotal':getTotal,
 		'results':results,
 		'fecha_inicio':fecha_inicio.date(),
 		'fecha_fin':fecha_fin.date() - timedelta(days=1),
@@ -342,24 +345,53 @@ def printReportTotal(request, clients_id, fecha_inicio, fecha_fin):
 
 def getTotales(products, results):
 	getTotal = {}
+	zinc = 0
+	plata = 0
+	plomo = 0
+	estanio = 0
+	cobre = 0
+	h2o = 0
 	for product in products:
 		for result in results:
 			if int(result.producto.id) == int(product.id):
-				if result.Elemento.Abreviatura not in getTotal:
-					getTotal[result.Elemento.Abreviatura] = 1
-					print(getTotal[result.Elemento.Abreviatura])
-				else:
-					getTotal[result.Elemento.Abreviatura] = getTotal[result.Elemento.Abreviatura] + 1
-
+				if not result.Zinc == None:
+					zinc = zinc + 1
+				if not result.Plata == None:
+					plata = plata + 1
+				if not result.Plomo == None:
+					plomo = plomo + 1
+				if not result.Estanio == None:
+					estanio = estanio + 1
+				if not result.Cobre == None:
+					cobre = cobre + 1
+				if not result.H2O == None:
+					h2o = h2o + 1
+	getTotal['zinc'] = zinc
+	getTotal['plata'] = plata
+	getTotal['plomo'] = plomo
+	getTotal['estanio'] = estanio
+	getTotal['cobre'] = cobre
+	getTotal['h2o'] = h2o
+	print(getTotal)
 	return getTotal
 
 def getTotalGeneral(products, results):
 	total_general = 0
 	for product in products:
 		for result in results:
-			print(product.id)
 			if int(result.producto.id) == int(product.id):
-				total_general = total_general + 1
+				if not result.Zinc == None:
+					total_general = total_general + 1
+				if not result.Plata == None:
+					total_general = total_general + 1
+				if not result.Plomo == None:
+					total_general = total_general + 1
+				if not result.Estanio == None:
+					total_general = total_general + 1
+				if not result.Cobre == None:
+					total_general = total_general + 1
+				if not result.H2O == None:
+					total_general = total_general + 1
 	return total_general
 
 def reportGeneral(request, clients_id, fecha_inicio, fecha_fin):
