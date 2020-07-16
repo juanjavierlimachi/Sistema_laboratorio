@@ -12,31 +12,16 @@
 </head>
 <body>
     
-    <table>
-        <thead>
-            <th colspan="2" style="font-size: 18px;">
-                <br>REPORTE DE
-            </th>
-        </thead>
-        <thead>
-            <th colspan="2" style="font-size: 18px;">
-                ANÁLISIS
-            </th>
-        </thead>
-        <tr>
-            <td>
-               
-            </td>
+    <table style="font-size: 5;">
+        <tr><br><br><br>
+            <td></td>
+            <td><br><br><br></td>
+            <td align="right">{{ingreso.id}}</td>
         </tr>
         <tr>
-            <td>
-               
-            </td>
-        </tr>
-        <tr>
-            <td width="100px"></td>
-            <td>
-                <br><strong>Perteneciente a: </strong> {{ingreso.cliente.Nombre|upper}}
+            <td width="260px"></td>
+            <td colspan="4"> <br> {{ingreso.cliente.Nombre|upper}}
+                <br><br><br><br><br><br> <br><br><br>
             </td>
         </tr>
     </table>
@@ -44,16 +29,16 @@
         <tr>
             <td width="100px"></td>
             <td>
-                <table style="width: 60%; margin: auto; margin-top: 100px;">
+                <table style="width: 60%; margin: auto; margin-top: 100px; font-size: 5;">
                     <thead>
                         <th>Fecha</th>
                         <th>Lote</th>
-                        <th style="width: 10%;">Zinc</th>
-                        <th style="width: 10%;">Plata</th>
-                        <th style="width: 10%;">Plomo</th>
-                        <th style="width: 10%;">Estaño</th>
-                        <th style="width: 10%;">Cobre</th>
-                        <th style="width: 10%;">H2O</th>
+                        <th style="width: 10%;">Zn</th>
+                        <th style="width: 10%;">DM.Ag</th>
+                        <th style="width: 10%;">%Pb</th>
+                        <th style="width: 10%;">%Sn</th>
+                        <th style="width: 10%;">%Cu</th>
+                        <th style="width: 10%;">%H2O</th>
                                
                     </thead>
                     <tbody>

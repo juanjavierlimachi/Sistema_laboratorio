@@ -55,6 +55,11 @@ def updateClient(request, id_cliente):
 def DetalleCliente(request,id):#id cliente
 	cliente = get_object_or_404(Cliente, pk=id)
 	productos=Producto.objects.filter(Cliente_id=id).order_by('-id')
+
+	try:
+		precio = Precio.objects.get(Cliente_id = id)
+	except Precio.DoesNotExist:
+		precio = False
 	Usuario=Producto(Usuario=request.user)
 	if request.method == 'POST':
 		forms=FormProducto(request.POST,instance=Usuario)
@@ -81,7 +86,8 @@ def DetalleCliente(request,id):#id cliente
 		'cliente':cliente,
 		'productos':productos,
 		'forms':forms,
-		'formR':formR
+		'formR':formR,
+		'precio':precio
 	}
 	return render(request,'cliente/Detalle_persona.html',dic)
 
@@ -321,19 +327,28 @@ def printReportTotal(request, clients_id, fecha_inicio, fecha_fin):
 		return HttpResponse("Error: La Fecha Inicio No pueder ser Mayor a la Fecha Final.")
 	if int(clients_id) == 0:# if you don't choose any customer
 		cliente = False
+		precio = False
 		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
 	else:
 		cliente = Cliente.objects.get(id=int(clients_id))
+		try:
+			precio = Precio.objects.get(Cliente_id = clients_id)
+		except Precio.DoesNotExist:
+			return HttpResponse('El Cliente no tiene precio agregados')
+		
 		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))	
-	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True).order_by('Elemento')
-	total_general = getTotalGeneral(products, results)
+	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
 	getTotal = getTotales(products, results)
+	total_general = getTotalGeneral(products, results)
+	calcularPrecios = calcularPreciosTotales(clients_id, getTotal)
 	dic={
 		'cliente':cliente,
 		'products':products,
 		'results':results,
-		'total_general':total_general,
+		'precio':precio,
 		'getTotal':getTotal,
+		'total_general':total_general,
+		'calcularPrecios':calcularPrecios,
 		'fecha_inicio':fecha_inicio.date(),
 		'fecha_fin':fecha_fin.date() - timedelta(days=1),
 		'date_today':datetime.now(),
@@ -342,6 +357,23 @@ def printReportTotal(request, clients_id, fecha_inicio, fecha_fin):
 	}
 	html = render_to_string('cliente/printReportTotal.html',dic)
 	return generar_pdf(html)
+
+def calcularPreciosTotales(clients_id, getTotal):
+	calcularPrecios = {}
+	precio = Precio.objects.get(Cliente_id = clients_id)
+	zinc = precio.Zinc * getTotal['Zn: ']
+	plata = precio.Plata * getTotal['DM.Ag']
+	plomo = precio.Plomo * getTotal['%Pb']
+	estanio = precio.Estanio * getTotal['%Sn']
+	cobre = precio.Cobre * getTotal['%Cu']
+	h2o = precio.H2O * getTotal['%H2O']
+	calcularPrecios['Zn: '] = zinc
+	calcularPrecios['DM.Ag'] = plata
+	calcularPrecios['%Pb'] = plomo
+	calcularPrecios['%Sn'] = estanio
+	calcularPrecios['%Cu'] = cobre
+	calcularPrecios['%H2O'] = h2o
+	return calcularPrecios
 
 def getTotales(products, results):
 	getTotal = {}
@@ -366,12 +398,12 @@ def getTotales(products, results):
 					cobre = cobre + 1
 				if not result.H2O == None:
 					h2o = h2o + 1
-	getTotal['zinc'] = zinc
-	getTotal['plata'] = plata
-	getTotal['plomo'] = plomo
-	getTotal['estanio'] = estanio
-	getTotal['cobre'] = cobre
-	getTotal['h2o'] = h2o
+	getTotal['Zn: '] = zinc
+	getTotal['DM.Ag'] = plata
+	getTotal['%Pb'] = plomo
+	getTotal['%Sn'] = estanio
+	getTotal['%Cu'] = cobre
+	getTotal['%H2O'] = h2o
 	print(getTotal)
 	return getTotal
 
@@ -407,11 +439,13 @@ def reportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 		cliente = Cliente.objects.get(id=int(clients_id))
 		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))
 	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
-	#total_general = getTotalGeneral(products, results)
-	#getTotal = getTotales(products, results)
+	total_general = getTotalGeneral(products, results)
+	getTotal = getTotales(products, results)
 	dic={
 			'cliente':cliente,
 			'products':products,
+			'total_general':total_general,
+			'getTotal':getTotal,
 			'results':results,
 			'fecha_inicio':fecha_inicio.date(),
 			'fecha_fin':fecha_fin.date() - timedelta(days=1),
@@ -425,6 +459,21 @@ def searchCode(request):
 	if request.method=='POST':
 		codigo = get_object_or_404(Codigo, pk=int(request.POST['search']))
 		return HttpResponseRedirect("/detalle-ingreso-cliente/"+str(codigo.id)+"/")
+
+
+def addPrecios(request, cliente_id):
+	if request.method=='POST':
+		forms=FormPrecio(request.POST)
+		if forms.is_valid():
+			datos = forms.save(commit=False)
+			datos.Cliente_id = int(cliente_id)
+			datos.save()
+			return redirect('/DetalleCliente/'+str(cliente_id)+'/')
+	else:
+		forms=FormPrecio()
+
+	return render(request,'cliente/addPrecios.html',{'forms':forms,'cliente_id':cliente_id})
+
 
 class ReportAnalisis(View):
 	def cabecera(self,pdf):

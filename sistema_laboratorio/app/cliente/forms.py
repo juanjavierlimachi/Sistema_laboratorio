@@ -43,3 +43,8 @@ class FormResultado(ModelForm):
 	class Meta():
 		model = Resultado
 		exclude=('estado','producto')
+	
+class FormPrecio(ModelForm):
+	class Meta():
+		model = Precio
+		exclude=('estado','Cliente')

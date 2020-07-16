@@ -1,12 +1,12 @@
 <div class="table-responsive">
-    <table style="font-size: 5;" class="table table-hover table-striped table-bordered dt-responsive datatable">
+    <table style="font-size: 6; width: 80%;" class="table table-hover table-striped table-bordered dt-responsive datatable">
         {% if cliente %}
         <tr>
-            <td align="center" colspan="4">PERTENECIENTE A: {{cliente.Nombre|upper}}</td>
+            <td align="center" colspan="8">PERTENECIENTE A: {{cliente.Nombre|upper}}</td>
         </tr>
         {% endif %}
         <tr>
-            <td align="center" colspan="4">DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}<br></td>
+            <td align="center" colspan="8">DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}<br></td>
         </tr>    
         <tr>
             <th style="width: 15%;">Fecha</th>
@@ -25,41 +25,29 @@
                     <td align="center">{{producto.Lote}}</td>
                     {% for j in results %}       
                         {% if j.producto_id == producto.id %}
-                            <td>{{j.Zinc}}</td>
-                            <td>{{j.Plata}}</td>
-                            <td>{{j.Plomo}}</td>
-                            <td>{{j.Estanio}}</td>
-                            <td>{{j.Cobre}}</td>
-                            <td>{{j.H2O}}</td>
+                            <td>{{j.Zinc|default_if_none:" "}}</td>
+                            <td>{{j.Plata|default_if_none:" "}}</td>
+                            <td>{{j.Plomo|default_if_none:" "}}</td>
+                            <td>{{j.Estanio|default_if_none:" "}}</td>
+                            <td>{{j.Cobre|default_if_none:" "}}</td>
+                            <td>{{j.H2O|default_if_none:" "}}</td>
                         {% endif %}
                     {% endfor %}
                 </tr>
             {% empty %}
-            <tr><td colspan="4" align="center"><h2>No hay registros</h2></td></tr>
+            <tr><td colspan="8" align="center"><h2>No hay registros</h2></td></tr>
             {% endfor %}
         </tbody>
         <tfoot>
             <tr>
-                <td>TOTALES</td>
-                <td colspan="3">
-                </td>
+                <td colspan="2">TOTALES</td>
+                {% for key, value in getTotal.items %}
+                <td>{{ value }}</td>
+                {% endfor %}  
             </tr>
             <tr>
-                <td colspan="4">TOTAL GENERAL : {{total_general}} ENSAYOS REALIZADOS</td>
-            </tr>
-            <tr>
-                <td colspan="4" align="center"><br>{{date_today}}</td>
-            </tr>
-            <tr>
-                <tr><td></td></tr>
-                <tr><td></td></tr>
-                <tr><td></td></tr>
-                <td colspan="4" align="center">{{usuario|title}}</td>
-            </tr>
-            <tr>
-                <td colspan="4" align="center">
-                    JEFE DE LABORATORIO
-                </td>
+                <td colspan="2">TOTAL GENERAL :</td>
+                <td colspan="6">{{total_general}} ENSAYOS REALIZADOS</td>
             </tr>
         </tfoot>
     </table>

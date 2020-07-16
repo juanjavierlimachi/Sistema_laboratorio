@@ -40,9 +40,13 @@ class Producto(models.Model):
 		return self.Lote
 
 class Precio(models.Model):
-	Precio = models.FloatField()
 	Cliente = models.ForeignKey(Cliente, on_delete = models.CASCADE)
-	Elemento = models.ForeignKey(Elemento, on_delete = models.CASCADE)
+	Zinc=models.FloatField(blank=True, null=True)
+	Plata=models.FloatField(blank=True, null=True)
+	Plomo=models.FloatField(blank=True, null=True)
+	Estanio=models.FloatField(blank=True, null=True)
+	Cobre=models.FloatField(blank=True, null=True)
+	H2O=models.FloatField(blank=True, null=True)
 	estado=models.BooleanField(default=True)
 	fecha_registro = models.DateTimeField(auto_now_add=True)
 	def __str__(self):
