@@ -6,11 +6,11 @@
         </tr>
         {% if cliente %}
         <tr>
-            <td align="center" colspan="8">PERTENECIENTE A: {{cliente.Nombre|upper}}</td>
+            <td align="center" colspan="8">DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}</td>
         </tr>
         {% endif %}
         <tr>
-            <td align="center" colspan="8">DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}<br></td>
+            <td align="center" colspan="8">PERTENECIENTE A: {{cliente.Nombre|upper}}<br></td>
         </tr>
         <thead>
         <tr>
@@ -47,20 +47,15 @@
         </tbody>
         <tfoot>
             <tr>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-            </tr>
-            <tr>
-                <td>TOTALES</td>
-                <td colspan="4">
-                    {% for i in getTotal.items %}       
-                        {% for k in i %}                    
-                            {{k}}
-                        {% endfor %}   
-                    {% endfor %}
+                <td colspan="8">
+                    <hr>
                 </td>
+            </tr>
+            <tr>
+                <td colspan="2">TOTALES</td>
+                {% for key, value in getTotal.items %}
+                <td align="center">{{ value }}</td>
+                {% endfor %}  
             </tr>
             <tr>
                 <td colspan="8">TOTAL GENERAL : {{total_general}} ENSAYOS REALIZADOS</td>

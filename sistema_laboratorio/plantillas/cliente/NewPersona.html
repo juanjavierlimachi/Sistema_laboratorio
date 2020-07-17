@@ -8,6 +8,7 @@
             data: $(this).serialize(),
             success:function(resp){
                 $('.x_content').html(resp);
+                $(".modal .close").click();
             }
         });
     });

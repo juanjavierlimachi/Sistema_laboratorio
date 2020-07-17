@@ -2,17 +2,13 @@
 	form input{
 		width: 80px;
 	}
+    form{
+        margin-left: 50px;
+        margin-bottom: 30px;
+    }
 </style>
 {% load bootstrap %}
 <div class="table-responsive">
-    <div class="btn-group">
-      <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle btn-sm" type="button" aria-expanded="false">OPCIONES    <span class="caret"></span>
-      </button>
-      <ul role="menu" class="dropdown-menu">
-              <li><a href="#" data-toggle="modal" onclick="detalleClient('/update-client/{{cliente.id}}','EDITAR LOS DATOS DEL CLIENTE')" data-target="#exampleModal">Editar Datos Del Cliente</a></li>
-               <li><a href="#" data-toggle="modal" id=myModal onclick="detalleClient('/new-producto-a-ingreso/{{ingreso.id}}','AGREGAR NUEVO PAQUETE')" data-target="#exampleModal">Registrar paquete</a></li>
-      </ul>
-    </div>
     <table class="table table-hover table-striped">
         <tr class="success">
             <td align="center" colspan="6"><strong>REPORTE DE ANALISIS</strong></td>
@@ -39,8 +35,8 @@
              {{forms}}
              {{formR}}
              <div class="form-group row" style="margin-left: 5px;">
-               <button type="submit" class="btn btn-primary">Registrar</button>
-               <button type="reset" class="btn btn-warning">Borrar</button>
+               <button type="submit" class="btn btn-primary btn-ms">Registrar</button>
+               <button type="reset" class="btn btn-warning btn-ms">Borrar</button>
              </div>
          </form>
         </div>
@@ -64,12 +60,12 @@
             <td>{{i.Lote|upper}}</td>
             {% for j in results %}       
                 {% if j.producto_id == i.id %}
-                    <td>{{j.Zinc}}</td>
-                    <td>{{j.Plata}}</td>
-                    <td>{{j.Plomo}}</td>
-                    <td>{{j.Estanio}}</td>
-                    <td>{{j.Cobre}}</td>
-                    <td>{{j.H2O}}</td>
+                    <td>{{j.Zinc|default_if_none:" "}}</td>
+                    <td>{{j.Plata|default_if_none:" "}}</td>
+                    <td>{{j.Plomo|default_if_none:" "}}</td>
+                    <td>{{j.Estanio|default_if_none:" "}}</td>
+                    <td>{{j.Cobre|default_if_none:" "}}</td>
+                    <td>{{j.H2O|default_if_none:" "}}</td>
                 {% endif %}
             {% endfor %}
             <td>
@@ -89,10 +85,10 @@
             </td>-->
         </tr>
         {% endfor %}
-            {% if productos.count > 0 %}
-            <tr><td colspan="5"></td><td><button type="button" href="#" id="print"onclick="printCertify('/print-certify/{{ingreso.id}}','')" class="btn btn-warning" >Imprimir</button></td></tr>
-            {% endif %}
         </tbody>
+        <tfoot>
+            <tr><td colspan="9"></td><td><button type="button" href="#" id="print"onclick="printCertify('/print-certify/{{ingreso.id}}','')" class="btn btn-warning" >Imprimir</button></td></tr>
+        </tfoot>
     </table>
     </div>
     <script type="text/javascript">
