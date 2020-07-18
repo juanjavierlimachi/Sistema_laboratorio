@@ -35,6 +35,6 @@ urlpatterns = [
 
 	path('search-code',views.searchCode),
 #precios
-
+	path('update-precios/<int:precio_id>/',views.updatePrecio),
 	path('add-precios/<int:cliente_id>/',views.addPrecios),
 ]

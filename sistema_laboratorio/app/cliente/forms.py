@@ -25,7 +25,7 @@ class FormProductoUpdate(ModelForm):
 class FormResultUpdate(ModelForm):
 	class Meta():
 		model = Resultado
-		exclude=('estado','producto')
+		fields=('Zinc','Plata','Plomo','Estanio','Cobre','H2O','Antimonio','Arsenico','Hierro',)
 
 
 class FormElemento(forms.ModelForm):
