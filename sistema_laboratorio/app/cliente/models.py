@@ -40,13 +40,16 @@ class Producto(models.Model):
 		return self.Lote
 
 class Precio(models.Model):
-	Cliente = models.ForeignKey(Cliente, on_delete = models.CASCADE)
+	Cliente = models.OneToOneField(Cliente, on_delete = models.CASCADE)
 	Zinc=models.FloatField(blank=True, null=True)
 	Plata=models.FloatField(blank=True, null=True)
 	Plomo=models.FloatField(blank=True, null=True)
 	Estanio=models.FloatField(blank=True, null=True)
 	Cobre=models.FloatField(blank=True, null=True)
 	H2O=models.FloatField(blank=True, null=True)
+	Antimonio=models.FloatField(blank=True, null=True)
+	Arsenico=models.FloatField(blank=True, null=True)
+	Hierro=models.FloatField(blank=True, null=True)
 	estado=models.BooleanField(default=True)
 	fecha_registro = models.DateTimeField(auto_now_add=True)
 	def __str__(self):
@@ -59,6 +62,9 @@ class Resultado(models.Model):
 	Estanio=models.FloatField(blank=True, null=True)
 	Cobre=models.FloatField(blank=True, null=True)
 	H2O=models.FloatField(blank=True, null=True)
+	Antimonio=models.FloatField(blank=True, null=True)
+	Arsenico=models.FloatField(blank=True, null=True)
+	Hierro=models.FloatField(blank=True, null=True)
 	producto=models.ForeignKey(Producto,on_delete = models.CASCADE)
 	estado=models.BooleanField(default=True)
 	fecha_registro = models.DateTimeField(auto_now_add=True)

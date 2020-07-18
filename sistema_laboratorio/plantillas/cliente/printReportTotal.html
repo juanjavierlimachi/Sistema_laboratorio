@@ -2,25 +2,25 @@
 <div class="table-responsive">
     <table style="font-size: 5;" class="table table-hover table-striped table-bordered dt-responsive datatable">
         <tr>
-            <td align="center" colspan="9"><strong>DETALLE DE ANÁLISIS DE MINERALES</strong></td>
+            <td align="center" colspan="8"><strong>DETALLE DE ANÁLISIS DE MINERALES</strong></td>
         </tr>
         <tr>
-            <td align="center" colspan="9"><strong>DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}</strong></td>
+            <td align="center" colspan="8"><strong>DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}</strong></td>
         </tr>
         {% if cliente %}
         <tr>
-            <td align="center" colspan="9"><strong>PARA: {{cliente.Nombre|upper}}</strong><br></td><br>
+            <td align="center" colspan="8"><strong>PARA: {{cliente.Nombre|upper}}</strong><br></td><br>
         </tr>
         {% endif %}
         <tbody>
             <tr>
-                <td width="200px">PRECIO POR ELEMENTO:</td>
-                <td width="72px" align="center">Zn</td>
-                <td width="72px" align="center">Ag</td>
-                <td width="72px" align="center">Pb</td>
-                <td width="72px" align="center">Sn</td>
-                <td width="72px" align="center">Cu</td>
-                <td width="72px" align="center">Humedad</td>
+                <td>PRECIO POR ELEMENTO:</td>
+                <td width="152px" align="center">Zn</td>
+                <td width="152px" align="center">Ag</td>
+                <td width="152px" align="center">Pb</td>
+                <td width="152px" align="center">Sn</td>
+                <td width="152px" align="center">Cu</td>
+                <td width="152px" align="center">Humedad</td>
             </tr>
             <tr>
                 <td></td>
@@ -35,33 +35,33 @@
         <tfoot>
             
             <tr>
-                <td width="200px"><br>CANTIDAD DE ANALISIS:</td>
+                <td><br>CANTIDAD DE ANALISIS:</td>
                 
                 {% for key, value in getTotal.items %}
                     <td align="center"><br>{{ value }}</td>
                 {% endfor %}   
             </tr>
             <tr>
-                <td width="200px">SUBTOTALES:</td>
+                <td>SUBTOTALES:</td>
                 {% for key, value in calcularPrecios.items %}
                     <td align="center">{{ value }}</td>
                 {% endfor %} 
             </tr>
             <tr>
-                <td width="200px">TOTAL GENERAL :</td>
-                <td colspan="8">{{total_general}} ENSAYOS REALIZADOS</td>
+                <td>TOTAL GENERAL :</td>
+                <td colspan="7">{{total_general}} ENSAYOS REALIZADOS</td>
             </tr>
             <tr>
-                <td colspan="9" align="center"><br>{{date_today}}</td>
+                <td colspan="8" align="center"><br>{{date_today}}</td>
             </tr>
             <tr>
                 <tr><td></td></tr>
                 <tr><td></td></tr>
                 <tr><td></td></tr>
-                <td colspan="9" align="center">{{usuario|title}}</td>
+                <td colspan="8" align="center">{{usuario|title}}</td>
             </tr>
             <tr>
-                <td colspan="9" align="center">JEFE DE LABORATORIO</td>
+                <td colspan="8" align="center">JEFE DE LABORATORIO</td>
             </tr>
         </tfoot>
 </table>

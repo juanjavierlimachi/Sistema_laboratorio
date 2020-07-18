@@ -313,7 +313,7 @@ def printReportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 		'fecha_inicio':fecha_inicio.date(),
 		'fecha_fin':fecha_fin.date() - timedelta(days=1),
 		'date_today':datetime.now(),
-		'usuario':request.user.first_name.title(),
+		'usuario':request.user.get_full_name,
 		'pagesize':'letter'
 	}
 	html = render_to_string('cliente/printReportGeneral.html',dic)
