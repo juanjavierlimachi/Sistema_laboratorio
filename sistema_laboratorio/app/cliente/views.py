@@ -188,11 +188,11 @@ def UpdateProduct(request, id_producto):
 	result = Resultado.objects.get(producto_id=int(dato.id))
 	if request.method == 'POST':
 		forms = FormProductoUpdate(request.POST, instance=dato)
-		formR = FormResultUpdate(results.POST, instance=result)
+		formR = FormResultUpdate(request.POST, instance=result)
 		if forms.is_valid() and formR.is_valid():
 			forms.save()
 			formR.save()
-			return HttpResponseRedirect('/DetalleCliente/'+str(dato.Cliente_id))
+			return HttpResponseRedirect('/detalle-ingreso-cliente/'+str(dato.codigo_ingreso.id))
 	else:
 		forms = FormProductoUpdate(instance=dato)
 		formR = FormResultUpdate(instance=result)
@@ -313,7 +313,7 @@ def printReportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 		'fecha_inicio':fecha_inicio.date(),
 		'fecha_fin':fecha_fin.date() - timedelta(days=1),
 		'date_today':datetime.now(),
-		'usuario':request.user.first_name.title(),
+		'usuario':request.user.get_full_name,
 		'pagesize':'letter'
 	}
 	html = render_to_string('cliente/printReportGeneral.html',dic)
@@ -473,6 +473,18 @@ def addPrecios(request, cliente_id):
 		forms=FormPrecio()
 
 	return render(request,'cliente/addPrecios.html',{'forms':forms,'cliente_id':cliente_id})
+
+
+def updatePrecio(request, precio_id):
+	dato=Precio.objects.get(id=int(precio_id))
+	if request.method=='POST':
+		forms=FormPrecio(request.POST, instance=dato)
+		if forms.is_valid():
+			forms.save()
+			return HttpResponse("El registro se actualizó correctamente.")
+	else:
+		forms=FormPrecio(instance=dato)
+	return render(request,'cliente/updatePrecio.html',{'forms':forms,'dato':dato})
 
 
 class ReportAnalisis(View):
