@@ -52,9 +52,35 @@
 <div class="row">
 	<form method="POST" action="/RegisterNewProductAndResult/{{cliente.id}}/" role="form" class="form-inline" id="formresult" data-parsley-validate >
 		{% csrf_token %}         
-		 {{forms}}
-		 {{formR}}
-		 <div class="form-group row" style="margin-left: 5px;">
+		 {{forms}}<br><br>
+		 <label for="">Zinc</label>
+		 {{formR.Zinc}}
+
+		 <label for="">Plata</label>
+		 {{formR.Plata}}
+
+		 <label for="">Plomo</label>
+		 {{formR.Plomo}}
+
+		 <label for="">Estaño</label>
+		 {{formR.Estanio}}
+
+		 <label for="">Cobre</label>
+		 {{formR.Cobre}}
+
+		 <label for="">H2O</label>
+		 {{formR.H2O}}
+
+		 <label for="">Antimonio</label>
+		 {{formR.Antimonio}}
+
+		 <label for="">Arsenico</label>
+		 {{formR.Arsenico}}
+
+		 <label for="">Hierro</label>
+		 {{formR.Hierro}}
+
+		 <div class="form-group row" style="margin-left: 5px; float:right;">
 		   <button type="submit" class="btn btn-primary">Registrar</button>
 		   <button type="reset" class="btn btn-warning">Borrar</button>
 		 </div>

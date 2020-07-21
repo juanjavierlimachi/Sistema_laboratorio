@@ -1,22 +1,19 @@
 <div class="table-responsive">
-    <table style="font-size: 6; width: 80%;" class="table table-hover table-striped table-bordered dt-responsive datatable">
+    <table style="font-size: 6;" class="table table-hover table-striped table-bordered dt-responsive datatable">
         {% if cliente %}
         <tr>
-            <td align="center" colspan="8">PERTENECIENTE A: {{cliente.Nombre|upper}}</td>
+            <td align="center" colspan="11">PERTENECIENTE A: {{cliente.Nombre|upper}}</td>
         </tr>
         {% endif %}
         <tr>
-            <td align="center" colspan="8">DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}<br></td>
+            <td align="center" colspan="11">DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}<br></td>
         </tr>    
         <tr>
             <th style="width: 15%;">Fecha</th>
-            <th>Lote</th>
-            <th>Zinc</th>
-            <th>Plata</th>
-            <th>Plomo</th>
-            <th>Estaño</th>
-            <th>Cobre</th>
-            <th>H2O</th>
+            <th style="width: 15%;">Lote</th>
+            {% for key, value in getTotal.items %}
+                <th>%{{ key }}</th>
+            {% endfor %} 
         </tr>
         <tbody>
             {% for producto in products %}
@@ -31,6 +28,9 @@
                             <td>{{j.Estanio|default_if_none:" "}}</td>
                             <td>{{j.Cobre|default_if_none:" "}}</td>
                             <td>{{j.H2O|default_if_none:" "}}</td>
+                            <td>{{j.Antimonio|default_if_none:" "}}</td>
+                            <td>{{j.Arsenico|default_if_none:" "}}</td>
+                            <td>{{j.Hierro|default_if_none:" "}}</td>
                         {% endif %}
                     {% endfor %}
                 </tr>
@@ -40,13 +40,13 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="2">TOTALES</td>
+                <td colspan="2"><strong>TOTALES</strong>:</td>
                 {% for key, value in getTotal.items %}
                 <td>{{ value }}</td>
                 {% endfor %}  
             </tr>
             <tr>
-                <td colspan="2">TOTAL GENERAL :</td>
+                <td colspan="2"><strong>TOTAL GENERAL</strong>:</td>
                 <td colspan="6">{{total_general}} ENSAYOS REALIZADOS</td>
             </tr>
         </tfoot>

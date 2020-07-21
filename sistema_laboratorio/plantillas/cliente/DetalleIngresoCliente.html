@@ -3,7 +3,7 @@
 		width: 80px;
 	}
     form{
-        margin-left: 50px;
+        margin-left: 20px;
         margin-bottom: 30px;
     }
 </style>
@@ -32,13 +32,39 @@
     <div class="row">
         <form method="POST" action="/detalle-ingreso-cliente/{{ingreso.id}}/" role="form" class="form-inline" id="formresult" data-parsley-validate >
             {% csrf_token %}         
-             {{forms}}
-             {{formR}}
-             <div class="form-group row" style="margin-left: 5px;">
-               <button type="submit" class="btn btn-primary btn-ms">Registrar</button>
-               <button type="reset" class="btn btn-warning btn-ms">Borrar</button>
-             </div>
-         </form>
+                {{forms}}<br><br>
+                <label for="">Zinc</label>
+                {{formR.Zinc}}
+    
+                <label for="">Plata</label>
+                {{formR.Plata}}
+    
+                <label for="">Plomo</label>
+                {{formR.Plomo}}
+    
+                <label for="">Estaño</label>
+                {{formR.Estanio}}
+    
+                <label for="">Cobre</label>
+                {{formR.Cobre}}
+    
+                <label for="">H2O</label>
+                {{formR.H2O}}
+    
+                <label for="">Antimonio</label>
+                {{formR.Antimonio}}
+    
+                <label for="">Arsenico</label>
+                {{formR.Arsenico}}
+    
+                <label for="">Hierro</label>
+                {{formR.Hierro}}
+    
+                <div class="form-group row" style="margin-left: 5px; float:right;">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+                <button type="reset" class="btn btn-warning">Borrar</button>
+                </div>
+            </form>
         </div>
     <table class="table table-striped table-bordered">
         <thead  class="success">
@@ -51,12 +77,16 @@
             <th>Estaño</th>
             <th>Cobre</th>
             <th>H2O</th>
+            <th>Antimonio</th>
+            <th>Arsenico</th>
+            <th>Hierro</th>
+            <th></th>
         </thead >
         <tbody>
         {% for i in productos %}
         <tr>
             <td>{{forloop.counter}}</td>
-            <td>{{i.fecha_registro|date:"l d M Y"}}</td>
+            <td>{{i.fecha_registro|date:"d M Y"}}</td>
             <td>{{i.Lote|upper}}</td>
             {% for j in results %}       
                 {% if j.producto_id == i.id %}
@@ -66,6 +96,9 @@
                     <td>{{j.Estanio|default_if_none:" "}}</td>
                     <td>{{j.Cobre|default_if_none:" "}}</td>
                     <td>{{j.H2O|default_if_none:" "}}</td>
+                    <td>{{j.Antimonio|default_if_none:" "}}</td>
+                    <td>{{j.Arsenico|default_if_none:" "}}</td>
+                    <td>{{j.Hierro|default_if_none:" "}}</td>
                 {% endif %}
             {% endfor %}
             <td>
@@ -87,7 +120,7 @@
         {% endfor %}
         </tbody>
         <tfoot>
-            <tr><td colspan="9"></td><td><button type="button" href="#" id="print"onclick="printCertify('/print-certify/{{ingreso.id}}','')" class="btn btn-warning" >Imprimir</button></td></tr>
+            <tr><td colspan="12"></td><td><button type="button" href="#" id="print"onclick="printCertify('/print-certify/{{ingreso.id}}','')" class="btn btn-success">Imprimir</button></td></tr>
         </tfoot>
     </table>
     </div>

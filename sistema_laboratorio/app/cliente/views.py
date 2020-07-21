@@ -264,11 +264,15 @@ def deleteResult(request, id_result):
 def printCertify(request ,ingreso_id):
 	ingreso = get_object_or_404(Codigo, pk=ingreso_id)
 	productos=Producto.objects.filter(codigo_ingreso=ingreso_id).order_by('-id')
+	results = getResult()
+	getTotal = getTotales(productos, results)
 	dic={
 		'ingreso':ingreso,
 		'productos':productos,
-		'results':getResult(),
-		'usuario':request.user.first_name.title()
+		'results':results,
+		'getTotal':getTotal,
+		'date_today':datetime.now(),
+		'usuario':User.objects.get(id=int(request.user.id))
 	}
 	html=render_to_string('cliente/printCertify.html',dic)
 	return generar_pdf(html)
@@ -313,7 +317,7 @@ def printReportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 		'fecha_inicio':fecha_inicio.date(),
 		'fecha_fin':fecha_fin.date() - timedelta(days=1),
 		'date_today':datetime.now(),
-		'usuario':request.user.get_full_name,
+		'usuario':User.objects.get(id=int(request.user.id)),
 		'pagesize':'letter'
 	}
 	html = render_to_string('cliente/printReportGeneral.html',dic)
@@ -341,38 +345,49 @@ def printReportTotal(request, clients_id, fecha_inicio, fecha_fin):
 	getTotal = getTotales(products, results)
 	total_general = getTotalGeneral(products, results)
 	calcularPrecios = calcularPreciosTotales(clients_id, getTotal)
+	totalPrecio = getTotalPrecio(calcularPrecios)
 	dic={
 		'cliente':cliente,
 		'products':products,
 		'results':results,
 		'precio':precio,
 		'getTotal':getTotal,
+		'totalPrecio':totalPrecio,
 		'total_general':total_general,
 		'calcularPrecios':calcularPrecios,
 		'fecha_inicio':fecha_inicio.date(),
 		'fecha_fin':fecha_fin.date() - timedelta(days=1),
 		'date_today':datetime.now(),
-		'usuario':request.user.first_name.title(),
+		'usuario':User.objects.get(id=int(request.user.id)),
 		'pagesize':'letter'
 	}
 	html = render_to_string('cliente/printReportTotal.html',dic)
 	return generar_pdf(html)
 
+def getTotalPrecio(calcularPrecios):
+	total = 0
+	for key, value in calcularPrecios.items():
+		total = total + value
+	return total 
+
 def calcularPreciosTotales(clients_id, getTotal):
 	calcularPrecios = {}
 	precio = Precio.objects.get(Cliente_id = clients_id)
-	zinc = precio.Zinc * getTotal['Zn: ']
+	zinc = precio.Zinc * getTotal['Zn']
 	plata = precio.Plata * getTotal['DM.Ag']
-	plomo = precio.Plomo * getTotal['%Pb']
-	estanio = precio.Estanio * getTotal['%Sn']
-	cobre = precio.Cobre * getTotal['%Cu']
-	h2o = precio.H2O * getTotal['%H2O']
-	calcularPrecios['Zn: '] = zinc
+	plomo = precio.Plomo * getTotal['Pb']
+	estanio = precio.Estanio * getTotal['Sn']
+	cobre = precio.Cobre * getTotal['Cu']
+	h2o = precio.H2O * getTotal['H2O']
+	calcularPrecios['Zn'] = zinc
 	calcularPrecios['DM.Ag'] = plata
-	calcularPrecios['%Pb'] = plomo
-	calcularPrecios['%Sn'] = estanio
-	calcularPrecios['%Cu'] = cobre
-	calcularPrecios['%H2O'] = h2o
+	calcularPrecios['Pb'] = plomo
+	calcularPrecios['Sn'] = estanio
+	calcularPrecios['Cu'] = cobre
+	calcularPrecios['H2O'] = h2o
+	calcularPrecios['Sb'] = estanio
+	calcularPrecios['As'] = cobre
+	calcularPrecios['Fe'] = h2o
 	return calcularPrecios
 
 def getTotales(products, results):
@@ -383,6 +398,9 @@ def getTotales(products, results):
 	estanio = 0
 	cobre = 0
 	h2o = 0
+	antimonio = 0
+	arsenico = 0
+	hierro = 0
 	for product in products:
 		for result in results:
 			if int(result.producto.id) == int(product.id):
@@ -398,12 +416,21 @@ def getTotales(products, results):
 					cobre = cobre + 1
 				if not result.H2O == None:
 					h2o = h2o + 1
-	getTotal['Zn: '] = zinc
+				if not result.Antimonio == None:
+					antimonio = antimonio + 1
+				if not result.Arsenico == None:
+					arsenico = arsenico + 1
+				if not result.Hierro == None:
+					hierro = hierro + 1
+	getTotal['Zn'] = zinc
 	getTotal['DM.Ag'] = plata
-	getTotal['%Pb'] = plomo
-	getTotal['%Sn'] = estanio
-	getTotal['%Cu'] = cobre
-	getTotal['%H2O'] = h2o
+	getTotal['Pb'] = plomo
+	getTotal['Sn'] = estanio
+	getTotal['Cu'] = cobre
+	getTotal['H2O'] = h2o
+	getTotal['Sb'] = antimonio
+	getTotal['As'] = arsenico
+	getTotal['Fe'] = hierro
 	print(getTotal)
 	return getTotal
 
@@ -423,6 +450,12 @@ def getTotalGeneral(products, results):
 				if not result.Cobre == None:
 					total_general = total_general + 1
 				if not result.H2O == None:
+					total_general = total_general + 1
+				if not result.Antimonio == None:
+					total_general = total_general + 1
+				if not result.Arsenico == None:
+					total_general = total_general + 1
+				if not result.Hierro == None:
 					total_general = total_general + 1
 	return total_general
 
