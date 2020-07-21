@@ -1,28 +1,41 @@
 <meta charset="utf-8">
 <div class="table-responsive">
-    <table style="font-size: 5;" class="table table-hover table-striped table-bordered dt-responsive datatable">
+    <table>
         <tr>
-            <td align="center" colspan="8">DETALLE DE ANÁLISIS DE MINERALES<br></td>
+            <td align="center" style="font-size: 3;">
+                Laboratorio Químico<br>
+                1 de Mayo<br>
+                Potosí-Bolivia
+            </td>
+            <td align="center" style="font-size: 5;"><strong><br>DETALLE DE ANÁLISIS DE MINERALES</strong><br></td>
+            <td align="center"  style="font-size: 3;">
+                Dirección Calle: Surco 314<br>
+                Celular: 77474926<br>
+                Email: lab.quim.1mayo@gmail.com 
+            </td>
+        </tr>
+        
+        <tr>
+            <td align="center" colspan="3" style="font-size: 5;"><strong>DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}</strong><br></td>
         </tr>
         {% if cliente %}
         <tr>
-            <td align="center" colspan="8">DESDE: {{fecha_inicio|date:"d M Y"}} HASTA: {{fecha_fin|date:"d M Y"}}</td>
+            <td align="center" colspan="3" style="font-size: 5;"><strong>PARA: {{cliente.Nombre|upper}}</strong><br></td>
         </tr>
         {% endif %}
-        <tr>
-            <td align="center" colspan="8">PERTENECIENTE A: {{cliente.Nombre|upper}}<br></td>
-        </tr>
+    </table>
+    <table style="font-size: 5;" class="table table-hover table-striped table-bordered dt-responsive datatable">
         <thead>
         <tr>
-            <th style="width: 15%;">Fecha</th>
-            <th>Lote</th>
-            
-            <th width="152px">Zinc</th>
-            <th width="152px">Plata</th>
-            <th width="152px">Plomo</th>
-            <th width="152px">Estaño</th>
-            <th width="152px">Cobre</th>
-            <th width="152px">H2O</th>
+            <th width="152px">Fecha</th>
+            <th width="152px">Lote</th>
+            {% for key, value in getTotal.items %}
+                {% if not value == 0 %}
+                <th width="122px">%{{ key }}</th>
+                {% else %}
+                <th width="0px"></th>
+                {% endif %}
+            {% endfor %} 
         </tr>
         </thead>
         <tbody>
@@ -32,14 +45,24 @@
                     <td align="center">{{producto.Lote}}</td>
                     {% for resultado in results %}
                         {% if resultado.producto_id == producto.id %}
+                    
                             <td align="center">{{resultado.Zinc|default_if_none:" "}}</td>
-
                             <td align="center">{{resultado.Plata|default_if_none:" "}}</td>
                             <td align="center">{{resultado.Plomo|default_if_none:" "}}</td>
 
                             <td align="center">{{resultado.Estanio|default_if_none:" "}}</td>
+
+                            
                             <td align="center">{{resultado.Cobre|default_if_none:" "}}</td>
+                           
+
                             <td align="center">{{resultado.H2O|default_if_none:" "}}</td>
+
+                            
+                            <td align="center">{{resultado.Antimonio|default_if_none:" "}}</td>
+                            
+                            <td align="center">{{resultado.Arsenico|default_if_none:" "}}</td>
+                            <td align="center">{{resultado.Hierro|default_if_none:" "}}</td>
                         {% endif %}
                     {% endfor %}
                 </tr>
@@ -47,32 +70,38 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="8">
+                <td colspan="11">
                     <hr>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">TOTALES</td>
                 {% for key, value in getTotal.items %}
-                <td align="center">{{ value }}</td>
+                    {% if not value == 0 %}
+                        <td align="center">{{ value }}</td>
+                    {% else %}
+                        <th width="0 px"></th>
+                    {% endif %}
                 {% endfor %}  
             </tr>
             <tr>
-                <td colspan="8">TOTAL GENERAL : {{total_general}} ENSAYOS REALIZADOS</td>
+                <td colspan="11">TOTAL GENERAL : {{total_general}} ENSAYOS REALIZADOS</td>
             </tr>
             <tr>
-                <td colspan="8" align="center"><br>{{date_today}}</td>
+                <td colspan="11" align="center"><br>{{date_today|date}}</td>
             </tr>
             <tr>
                 <tr><td></td></tr>
                 <tr><td></td></tr>
                 <tr><td></td></tr>
-                <td colspan="8" align="center">{{usuario}}</td>
+                <td colspan="11" align="center">{{usuario.get_full_name|title}}</td>
             </tr>
             <tr>
-                <td colspan="8" align="center">
-                    JEFE DE LABORATORIO
-                </td>
+                {% if usuario.is_superuser %}
+                <td colspan="11" align="center">JEFE DE LABORATORIO</td>
+                {% else %}
+                <td colspan="11" align="center">USUARIO</td>
+                {% endif %}
             </tr>
         </tfoot>
 </table>
