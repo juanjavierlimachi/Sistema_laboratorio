@@ -12,31 +12,16 @@
 </head>
 <body>
     
-    <table>
-        <thead>
-            <th colspan="2" style="font-size: 18px;">
-                <br>REPORTE DE
-            </th>
-        </thead>
-        <thead>
-            <th colspan="2" style="font-size: 18px;">
-                ANÁLISIS
-            </th>
-        </thead>
-        <tr>
-            <td>
-               
-            </td>
+    <table style="font-size: 5;">
+        <tr><br><br><br>
+            <td></td>
+            <td><br><br><br></td>
+            <td align="right" colspan="2"><br>{{ingreso.id}}</td>
         </tr>
         <tr>
-            <td>
-               
-            </td>
-        </tr>
-        <tr>
-            <td width="100px"></td>
-            <td>
-                <br><strong>Perteneciente a: </strong> {{ingreso.cliente.Nombre|upper}}
+            <td width="260px"></td>
+            <td colspan="4"> {{ingreso.cliente.Nombre|upper}}
+                <br><br><br><br><br><br>
             </td>
         </tr>
     </table>
@@ -44,25 +29,46 @@
         <tr>
             <td width="100px"></td>
             <td>
-                <table border="0.5" style="width: 60%; margin: auto; margin-top: 100px;">
+                <table style="max-width: 60%; margin: auto; margin-top: 100px; font-size: 4;">
                     <thead>
-                        <th>Fecha</th>
-                        <th>Lote</th>
-                        <th>Resultados</th>
+                        <th width="150px">Fecha</th>
+                        <th width="152px">Lote</th>
+                        {% for key, value in getTotal.items %}
+                            {% if not value == 0 %}
+                                <th width="100px">
+                                    {% if not key == 'DM.Ag' %}
+                                        %{{ key }}
+                                    {% else %}
+                                        {{ key }}
+                                    {% endif %}
+                                </th>
+                            {% else %}
+                                <th width="0px"></th>
+                            {% endif %}
+                        {% endfor %} 
                     </thead>
                     <tbody>
                         {% for i in productos %}
                         <tr>
-                            <td>{{i.fecha_registro|date:" d M Y"}}</td>
+                            <td>{{i.fecha|date:" d/m/Y"}}</td>
                             <td>{{i.Lote|upper}}</td>
-                            <td>
-                                {% for j in results %}
-                                    
-                                    {% if j.producto_id == i.id %}
-                                        {{j.Elemento.Abreviatura}}  {{j.Resultado}}
-                                    {% endif %}
-                                {% endfor %}
-                            </td>
+                            {% for j in results %}       
+                                {% if j.producto_id == i.id %}
+                                        <td align="center">{{j.Zinc|default_if_none:" "}}</td>
+
+                                        <td align="center">{{j.Plata|default_if_none:" "}}</td>
+                                        <td align="center">{{j.Plomo|default_if_none:" "}}</td>
+
+                                        <td align="center">{{j.Estanio|default_if_none:" "}}</td>
+                                        <td align="center">{{j.Cobre|default_if_none:" "}}</td>
+                                        <td align="center">{{j.H2O|default_if_none:" "}}</td>
+
+                                        <td align="center">{{j.Antimonio|default_if_none:" "}}</td>
+                                        <td align="center">{{j.Arsenico|default_if_none:" "}}</td>
+                                        <td align="center">{{j.Hierro|default_if_none:" "}}</td>
+
+                                {% endif %}
+                            {% endfor %}
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -75,13 +81,19 @@
         <tr>
             <td width="100px"></td>
             <td>
-                <strong>Fecha:</strong> Potosí {{date_today}}<br>
+                <strong>Fecha:</strong> Potosí {{date_today|date}}<br>
             </td>
         </tr>
         <tr>
             <td width="100px"></td>
             <td>
-                <strong>Gefe de Laboratorio:</strong> {{usuario}}
+                <strong>
+                    {% if usuario.is_superuser %}
+                        Gefe de Laboratorio
+                    {% else %}
+                        Usuario
+                    {% endif %}
+                    :</strong> {{usuario.get_full_name|title}}
             </td>
         </tr>
     </table>

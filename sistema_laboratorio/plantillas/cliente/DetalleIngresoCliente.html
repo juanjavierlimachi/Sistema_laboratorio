@@ -1,12 +1,17 @@
+<style>
+	form input{
+		width: 80px;
+	}
+    form{
+        margin-left: 20px;
+        margin-bottom: 30px;
+    }
+    form #id_fecha{
+		width: 90px;
+	}
+</style>
+{% load bootstrap %}
 <div class="table-responsive">
-    <div class="btn-group">
-      <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle btn-sm" type="button" aria-expanded="false">OPCIONES    <span class="caret"></span>
-      </button>
-      <ul role="menu" class="dropdown-menu">
-              <li><a href="#" data-toggle="modal" onclick="detalleClient('/update-client/{{cliente.id}}','EDITAR LOS DATOS DEL CLIENTE')" data-target="#exampleModal">Editar Datos Del Cliente</a></li>
-               <li><a href="#" data-toggle="modal" id=myModal onclick="detalleClient('/new-producto-a-ingreso/{{ingreso.id}}','AGREGAR NUEVO PAQUETE')" data-target="#exampleModal">Registrar paquete</a></li>
-      </ul>
-    </div>
     <table class="table table-hover table-striped">
         <tr class="success">
             <td align="center" colspan="6"><strong>REPORTE DE ANALISIS</strong></td>
@@ -27,29 +32,81 @@
                 {% endif %}</td>
         </tr>
     </table>
+    <div class="row">
+        <form method="POST" action="/detalle-ingreso-cliente/{{ingreso.id}}/" role="form" class="form-inline" id="formresult" data-parsley-validate >
+            {% csrf_token %}         
+                {{forms}}<br><br>
+                <label for="">Zinc</label>
+                {{formR.Zinc}}
+    
+                <label for="">Plata</label>
+                {{formR.Plata}}
+    
+                <label for="">Plomo</label>
+                {{formR.Plomo}}
+    
+                <label for="">Estaño</label>
+                {{formR.Estanio}}
+    
+                <label for="">Cobre</label>
+                {{formR.Cobre}}
+    
+                <label for="">H2O</label>
+                {{formR.H2O}}
+    
+                <label for="">Antimonio</label>
+                {{formR.Antimonio}}
+    
+                <label for="">Arsenico</label>
+                {{formR.Arsenico}}
+    
+                <label for="">Hierro</label>
+                {{formR.Hierro}}
+    
+                <div class="form-group row" style="margin-left: 5px; float:right;">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+                <button type="reset" class="btn btn-warning">Borrar</button>
+                </div>
+            </form>
+        </div>
     <table class="table table-striped table-bordered">
         <thead  class="success">
             <th style="width: 3%;">Nro</th>
             <th>FECHA</th>
             <th>LOTE</th>
-    
+            <th>Zinc</th>
+            <th>Plata</th>
+            <th>Plomo</th>
+            <th>Estaño</th>
+            <th>Cobre</th>
+            <th>H2O</th>
+            <th>Antimonio</th>
+            <th>Arsenico</th>
+            <th>Hierro</th>
+            <th></th>
         </thead >
         <tbody>
         {% for i in productos %}
         <tr>
             <td>{{forloop.counter}}</td>
-            <td>{{i.fecha_registro|date:"l d M Y"}}</td>
+            <td>{{i.fecha|date:"d/m/Y"}}</td>
             <td>{{i.Lote|upper}}</td>
-            <td>
-                {% for j in results %}       
-                    {% if j.producto_id == i.id %}
-                        {{j.Elemento.Abreviatura}}  {{j.Resultado}}
-                    {% endif %}
-                {% endfor %}
-            </td>
+            {% for j in results %}       
+                {% if j.producto_id == i.id %}
+                    <td>{{j.Zinc|default_if_none:" "}}</td>
+                    <td>{{j.Plata|default_if_none:" "}}</td>
+                    <td>{{j.Plomo|default_if_none:" "}}</td>
+                    <td>{{j.Estanio|default_if_none:" "}}</td>
+                    <td>{{j.Cobre|default_if_none:" "}}</td>
+                    <td>{{j.H2O|default_if_none:" "}}</td>
+                    <td>{{j.Antimonio|default_if_none:" "}}</td>
+                    <td>{{j.Arsenico|default_if_none:" "}}</td>
+                    <td>{{j.Hierro|default_if_none:" "}}</td>
+                {% endif %}
+            {% endfor %}
             <td>
                 {% if i.estado %}
-                <button type="button" class="btn btn-success btn-xs" onclick="detalleClient('/RegisterResultados/{{i.id}}','REGISTRAR MUESTRA DE MINERAL DE: {{i.Cliente.Nombre|upper}}')" data-toggle="modal" data-target=".bd-example-modal-lg">Resultados</button>
+               <!--  <button type="button" class="btn btn-success btn-xs" onclick="detalleClient('/RegisterResultados/{{i.id}}','REGISTRAR MUESTRA DE MINERAL DE: {{i.Cliente.Nombre|upper}}')" data-toggle="modal" data-target=".bd-example-modal-lg">Resultados</button> -->
                     {% if user.is_superuser %}
                         <button type="button" class="btn btn-info btn-xs" onclick="detalleClient('update-product/{{i.id}}','Editar el paquete: {{i.Lote|upper}}')" data-toggle="modal" data-target="#exampleModal">Editar</button>
                     {% endif %}
@@ -63,19 +120,26 @@
                 {% endif %}
             </td>-->
         </tr>
-        {% empty %}
-        <tr> <td colspan="5" align="center"><strong>Aún no tiene paquetes registrados: registre aqui: </strong><a href="#" data-toggle="modal" id=myModal onclick="detalleClient('/detalle-ingreso-cliente/{{ingreso.id}}','')" data-target="#exampleModal">Registrar paquete</a></td> </tr>
         {% endfor %}
-            {% if productos.count > 0 %}
-            <tr><td colspan="5"></td><td><button type="button" href="#" id="print"onclick="printCertify('/print-certify/{{ingreso.id}}','')" class="btn btn-warning" >Imprimir</button></td></tr>
-            {% endif %}
         </tbody>
+        <tfoot>
+            <tr><td colspan="12"></td><td><button type="button" href="#" id="print"onclick="printCertify('/print-certify/{{ingreso.id}}','')" class="btn btn-success">Imprimir</button></td></tr>
+        </tfoot>
     </table>
     </div>
     <script type="text/javascript">
-        $(document).ready(function(){
-           // $("#myModal").trigger("click");
-        } );
+        $('#formresult').submit(function(e){
+            e.preventDefault();
+            var dato=$(this).serialize();
+            $.ajax({
+                type:'POST',
+                url:$(this).attr("action"),
+                data: dato,
+                success:function(resp){
+                        $(".x_content").html(resp);
+                }
+            });
+        });
         function detalleClient(route,title){
             $(".modal-title").text(title);
             $.ajax({

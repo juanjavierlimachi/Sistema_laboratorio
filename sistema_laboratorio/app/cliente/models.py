@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.forms import User
+from datetime import date
 # Create your models here.
 class Cliente(models.Model):
 	Nombre=models.CharField(max_length=150)
@@ -35,22 +36,37 @@ class Producto(models.Model):
 	Usuario=models.ForeignKey(User,on_delete = models.CASCADE)
 	codigo_ingreso = models.ForeignKey(Codigo, on_delete = models.CASCADE,blank=True, null=True)
 	estado=models.BooleanField(default=True, help_text="Desactive esta casilla para dar de baja este producto")
+	fecha = models.DateField(default=date.today)
 	fecha_registro = models.DateTimeField(auto_now_add=True)
 	def __str__(self):
 		return self.Lote
 
 class Precio(models.Model):
-	Precio = models.FloatField()
-	Cliente = models.ForeignKey(Cliente, on_delete = models.CASCADE)
-	Elemento = models.ForeignKey(Elemento, on_delete = models.CASCADE)
+	Cliente = models.OneToOneField(Cliente, on_delete = models.CASCADE)
+	Zinc=models.FloatField()
+	Plata=models.FloatField()
+	Plomo=models.FloatField()
+	Estanio=models.FloatField()
+	Cobre=models.FloatField()
+	H2O=models.FloatField()
+	Antimonio=models.FloatField()
+	Arsenico=models.FloatField()
+	Hierro=models.FloatField()
 	estado=models.BooleanField(default=True)
 	fecha_registro = models.DateTimeField(auto_now_add=True)
 	def __str__(self):
 		return self.Cliente.Nombre
 
 class Resultado(models.Model):
-	Resultado=models.FloatField()
-	Elemento = models.ForeignKey(Elemento, on_delete = models.CASCADE)
+	Zinc=models.FloatField(blank=True, null=True)
+	Plata=models.FloatField(blank=True, null=True)
+	Plomo=models.FloatField(blank=True, null=True)
+	Estanio=models.FloatField(blank=True, null=True)
+	Cobre=models.FloatField(blank=True, null=True)
+	H2O=models.FloatField(blank=True, null=True)
+	Antimonio=models.FloatField(blank=True, null=True)
+	Arsenico=models.FloatField(blank=True, null=True)
+	Hierro=models.FloatField(blank=True, null=True)
 	producto=models.ForeignKey(Producto,on_delete = models.CASCADE)
 	estado=models.BooleanField(default=True)
 	fecha_registro = models.DateTimeField(auto_now_add=True)

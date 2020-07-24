@@ -20,7 +20,13 @@ class FormProducto(ModelForm):
 class FormProductoUpdate(ModelForm):
 	class Meta():
 		model = Producto
-		exclude=('Usuario','Cliente')
+		fields=('Lote','fecha',)
+		exclude=('Usuario','Cliente','codigo_ingreso')
+
+class FormResultUpdate(ModelForm):
+	class Meta():
+		model = Resultado
+		fields=('Zinc','Plata','Plomo','Estanio','Cobre','H2O','Antimonio','Arsenico','Hierro',)
 
 
 class FormElemento(forms.ModelForm):
@@ -38,6 +44,8 @@ class FormResultado(ModelForm):
 	class Meta():
 		model = Resultado
 		exclude=('estado','producto')
-	def __init__(self, *args, **kwargs):
-		super(FormResultado, self).__init__(*args, **kwargs)
-		self.fields['Elemento'].queryset = Elemento.objects.filter(estado=True)
+	
+class FormPrecio(ModelForm):
+	class Meta():
+		model = Precio
+		exclude=('estado','Cliente')

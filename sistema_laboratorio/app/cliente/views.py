@@ -55,6 +55,11 @@ def updateClient(request, id_cliente):
 def DetalleCliente(request,id):#id cliente
 	cliente = get_object_or_404(Cliente, pk=id)
 	productos=Producto.objects.filter(Cliente_id=id).order_by('-id')
+
+	try:
+		precio = Precio.objects.get(Cliente_id = id)
+	except Precio.DoesNotExist:
+		precio = False
 	Usuario=Producto(Usuario=request.user)
 	if request.method == 'POST':
 		forms=FormProducto(request.POST,instance=Usuario)
@@ -81,17 +86,40 @@ def DetalleCliente(request,id):#id cliente
 		'cliente':cliente,
 		'productos':productos,
 		'forms':forms,
-		'formR':formR
+		'formR':formR,
+		'precio':precio
 	}
 	return render(request,'cliente/Detalle_persona.html',dic)
 
 def DetalleIngresoCliente(request ,ingreso_id):
 	ingreso = get_object_or_404(Codigo, pk=ingreso_id)
 	productos=Producto.objects.filter(codigo_ingreso=ingreso_id).order_by('-id')
+	Usuario=Producto(Usuario=request.user)
+	if request.method == 'POST':
+		forms=FormProducto(request.POST,instance=Usuario)
+		formR=FormResultado(request.POST)
+
+		if forms.is_valid() and formR.is_valid():
+			
+			datos = forms.save(commit=False)
+			datos.Cliente_id = int(ingreso.cliente.id)
+			datos.codigo_ingreso_id = int(ingreso_id)
+			datos.save()#Guardo el Formulario Producto
+
+			Dato = formR.save(commit=False)
+			Dato.producto_id = int(datos.id)
+			Dato.save()#Guardo el Formulario resultado
+
+			return HttpResponseRedirect("/detalle-ingreso-cliente/"+str(ingreso_id)+"/")#retorna a la funcion DetalleCliente
+	else:
+		forms=FormProducto(instance=Usuario)
+		formR=FormResultado()
 	dic={
 		'ingreso':ingreso,
 		'productos':productos,
-		'results':getResult()
+		'results':getResult(),
+		'forms':forms,
+		'formR':formR
 	}
 	return render(request,'cliente/DetalleIngresoCliente.html',dic)
 
@@ -157,14 +185,18 @@ def RegisterNewProductAndResult(request, id):#(id_cliente)
 
 def UpdateProduct(request, id_producto):
 	dato = Producto.objects.get(id=int(id_producto))
+	result = Resultado.objects.get(producto_id=int(dato.id))
 	if request.method == 'POST':
 		forms = FormProductoUpdate(request.POST, instance=dato)
-		if forms.is_valid():
+		formR = FormResultUpdate(request.POST, instance=result)
+		if forms.is_valid() and formR.is_valid():
 			forms.save()
-			return HttpResponseRedirect('/DetalleCliente/'+str(dato.Cliente_id))
+			formR.save()
+			return HttpResponseRedirect('/detalle-ingreso-cliente/'+str(dato.codigo_ingreso.id))
 	else:
 		forms = FormProductoUpdate(instance=dato)
-	return render(request, 'cliente/UpdateProduct.html', {'forms': forms, 'dato': dato})
+		formR = FormResultUpdate(instance=result)
+	return render(request, 'cliente/UpdateProduct.html', {'forms': forms,'formR':formR,'dato': dato})
 
 def RestoreProduct(request, id_producto):
 	producto = Producto.objects.get(id=int(id_producto))
@@ -231,11 +263,16 @@ def deleteResult(request, id_result):
 
 def printCertify(request ,ingreso_id):
 	ingreso = get_object_or_404(Codigo, pk=ingreso_id)
-	productos=Producto.objects.filter(codigo_ingreso=ingreso_id).order_by('-id')
+	productos=Producto.objects.filter(codigo_ingreso=ingreso_id)
+	results = getResult()
+	getTotal = getTotales(productos, results)
 	dic={
 		'ingreso':ingreso,
 		'productos':productos,
-		'results':getResult()
+		'results':results,
+		'getTotal':getTotal,
+		'date_today':datetime.now(),
+		'usuario':User.objects.get(id=int(request.user.id))
 	}
 	html=render_to_string('cliente/printCertify.html',dic)
 	return generar_pdf(html)
@@ -264,23 +301,23 @@ def printReportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 		return HttpResponse("Error: La Fecha Inicio No pueder ser Mayor a la Fecha Final.")
 	if int(clients_id) == 0:# if you don't choose any customer
 		cliente = False
-		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
+		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True).order_by('fecha')
 	else:
 		cliente = Cliente.objects.get(id=int(clients_id))
-		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))	
-	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True).order_by('Elemento')
+		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id)).order_by('fecha')	
+	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
 	total_general = getTotalGeneral(products, results)
 	getTotal = getTotales(products, results)
 	dic={
 		'cliente':cliente,
 		'products':products,
-		'results':results,
 		'total_general':total_general,
 		'getTotal':getTotal,
+		'results':results,
 		'fecha_inicio':fecha_inicio.date(),
 		'fecha_fin':fecha_fin.date() - timedelta(days=1),
 		'date_today':datetime.now(),
-		'usuario':request.user.first_name.title(),
+		'usuario':User.objects.get(id=int(request.user.id)),
 		'pagesize':'letter'
 	}
 	html = render_to_string('cliente/printReportGeneral.html',dic)
@@ -294,53 +331,139 @@ def printReportTotal(request, clients_id, fecha_inicio, fecha_fin):
 		return HttpResponse("Error: La Fecha Inicio No pueder ser Mayor a la Fecha Final.")
 	if int(clients_id) == 0:# if you don't choose any customer
 		cliente = False
+		precio = False
 		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
 	else:
 		cliente = Cliente.objects.get(id=int(clients_id))
+		try:
+			precio = Precio.objects.get(Cliente_id = clients_id)
+		except Precio.DoesNotExist:
+			return HttpResponse('<h1>Por favor registre los precios del cliente %s para poder generar el reporte.</h1>'%(cliente.Nombre.upper()))
+		
 		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))	
-	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True).order_by('Elemento')
-	total_general = getTotalGeneral(products, results)
+	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
 	getTotal = getTotales(products, results)
+	total_general = getTotalGeneral(products, results)
+	calcularPrecios = calcularPreciosTotales(clients_id, getTotal)
+	totalPrecio = getTotalPrecio(calcularPrecios)
 	dic={
 		'cliente':cliente,
 		'products':products,
 		'results':results,
-		'total_general':total_general,
+		'precio':precio,
 		'getTotal':getTotal,
+		'totalPrecio':totalPrecio,
+		'total_general':total_general,
+		'calcularPrecios':calcularPrecios,
 		'fecha_inicio':fecha_inicio.date(),
 		'fecha_fin':fecha_fin.date() - timedelta(days=1),
 		'date_today':datetime.now(),
-		'usuario':request.user.first_name.title(),
+		'usuario':User.objects.get(id=int(request.user.id)),
 		'pagesize':'letter'
 	}
 	html = render_to_string('cliente/printReportTotal.html',dic)
 	return generar_pdf(html)
 
+def getTotalPrecio(calcularPrecios):
+	total = 0
+	for key, value in calcularPrecios.items():
+		total = total + value
+	return total 
+
+def calcularPreciosTotales(clients_id, getTotal):
+	calcularPrecios = {}
+	precio = Precio.objects.get(Cliente_id = clients_id)
+	zinc = precio.Zinc * getTotal['Zn']
+	plata = precio.Plata * getTotal['DM.Ag']
+	plomo = precio.Plomo * getTotal['Pb']
+	estanio = precio.Estanio * getTotal['Sn']
+	cobre = precio.Cobre * getTotal['Cu']
+	h2o = precio.H2O * getTotal['H2O']
+	calcularPrecios['Zn'] = zinc
+	calcularPrecios['DM.Ag'] = plata
+	calcularPrecios['Pb'] = plomo
+	calcularPrecios['Sn'] = estanio
+	calcularPrecios['Cu'] = cobre
+	calcularPrecios['H2O'] = h2o
+	calcularPrecios['Sb'] = estanio
+	calcularPrecios['As'] = cobre
+	calcularPrecios['Fe'] = h2o
+	return calcularPrecios
+
 def getTotales(products, results):
 	getTotal = {}
+	zinc = 0
+	plata = 0
+	plomo = 0
+	estanio = 0
+	cobre = 0
+	h2o = 0
+	antimonio = 0
+	arsenico = 0
+	hierro = 0
 	for product in products:
 		for result in results:
 			if int(result.producto.id) == int(product.id):
-				if result.Elemento.Abreviatura not in getTotal:
-					getTotal[result.Elemento.Abreviatura] = 1
-					print(getTotal[result.Elemento.Abreviatura])
-				else:
-					getTotal[result.Elemento.Abreviatura] = getTotal[result.Elemento.Abreviatura] + 1
-
+				if not result.Zinc == None:
+					zinc = zinc + 1
+				if not result.Plata == None:
+					plata = plata + 1
+				if not result.Plomo == None:
+					plomo = plomo + 1
+				if not result.Estanio == None:
+					estanio = estanio + 1
+				if not result.Cobre == None:
+					cobre = cobre + 1
+				if not result.H2O == None:
+					h2o = h2o + 1
+				if not result.Antimonio == None:
+					antimonio = antimonio + 1
+				if not result.Arsenico == None:
+					arsenico = arsenico + 1
+				if not result.Hierro == None:
+					hierro = hierro + 1
+	getTotal['Zn'] = zinc
+	getTotal['DM.Ag'] = plata
+	getTotal['Pb'] = plomo
+	getTotal['Sn'] = estanio
+	getTotal['Cu'] = cobre
+	getTotal['H2O'] = h2o
+	getTotal['Sb'] = antimonio
+	getTotal['As'] = arsenico
+	getTotal['Fe'] = hierro
+	print(getTotal)
 	return getTotal
 
 def getTotalGeneral(products, results):
 	total_general = 0
 	for product in products:
 		for result in results:
-			print(product.id)
 			if int(result.producto.id) == int(product.id):
-				total_general = total_general + 1
+				if not result.Zinc == None:
+					total_general = total_general + 1
+				if not result.Plata == None:
+					total_general = total_general + 1
+				if not result.Plomo == None:
+					total_general = total_general + 1
+				if not result.Estanio == None:
+					total_general = total_general + 1
+				if not result.Cobre == None:
+					total_general = total_general + 1
+				if not result.H2O == None:
+					total_general = total_general + 1
+				if not result.Antimonio == None:
+					total_general = total_general + 1
+				if not result.Arsenico == None:
+					total_general = total_general + 1
+				if not result.Hierro == None:
+					total_general = total_general + 1
 	return total_general
 
 def reportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 	fecha_inicio = datetime.strptime(fecha_inicio,"%d-%m-%Y")
+	print('Fecha inicio: ',fecha_inicio)
 	fecha_fin = datetime.strptime(fecha_fin,"%d-%m-%Y")
+	print('Fecha final: ', fecha_fin)
 	fecha_fin = fecha_fin + timedelta(days=1)
 	if str(fecha_inicio) > str(fecha_fin):
 		return HttpResponse("Error: La Fecha Inicio No pueder ser Mayor a la Fecha Final.")
@@ -350,15 +473,15 @@ def reportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 	else:
 		cliente = Cliente.objects.get(id=int(clients_id))
 		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))
-	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True).order_by('Elemento')
+	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
 	total_general = getTotalGeneral(products, results)
 	getTotal = getTotales(products, results)
 	dic={
 			'cliente':cliente,
 			'products':products,
-			'results':results,
 			'total_general':total_general,
 			'getTotal':getTotal,
+			'results':results,
 			'fecha_inicio':fecha_inicio.date(),
 			'fecha_fin':fecha_fin.date() - timedelta(days=1),
 			'date_today':datetime.now(),
@@ -371,6 +494,33 @@ def searchCode(request):
 	if request.method=='POST':
 		codigo = get_object_or_404(Codigo, pk=int(request.POST['search']))
 		return HttpResponseRedirect("/detalle-ingreso-cliente/"+str(codigo.id)+"/")
+
+
+def addPrecios(request, cliente_id):
+	if request.method=='POST':
+		forms=FormPrecio(request.POST)
+		if forms.is_valid():
+			datos = forms.save(commit=False)
+			datos.Cliente_id = int(cliente_id)
+			datos.save()
+			return redirect('/DetalleCliente/'+str(cliente_id)+'/')
+	else:
+		forms=FormPrecio()
+
+	return render(request,'cliente/addPrecios.html',{'forms':forms,'cliente_id':cliente_id})
+
+
+def updatePrecio(request, precio_id):
+	dato=Precio.objects.get(id=int(precio_id))
+	if request.method=='POST':
+		forms=FormPrecio(request.POST, instance=dato)
+		if forms.is_valid():
+			forms.save()
+			return HttpResponse("El registro se actualizó correctamente.")
+	else:
+		forms=FormPrecio(instance=dato)
+	return render(request,'cliente/updatePrecio.html',{'forms':forms,'dato':dato})
+
 
 class ReportAnalisis(View):
 	def cabecera(self,pdf):

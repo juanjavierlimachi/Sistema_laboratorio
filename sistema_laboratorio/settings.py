@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'sistema_laboratorio.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'laboratorio',
+        'NAME': 'lab',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
@@ -119,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-BO'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/La_Paz'
 
 USE_I18N = True
 
