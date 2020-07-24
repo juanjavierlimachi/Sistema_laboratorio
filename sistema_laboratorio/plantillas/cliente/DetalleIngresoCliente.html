@@ -6,6 +6,9 @@
         margin-left: 20px;
         margin-bottom: 30px;
     }
+    form #id_fecha{
+		width: 90px;
+	}
 </style>
 {% load bootstrap %}
 <div class="table-responsive">
@@ -86,7 +89,7 @@
         {% for i in productos %}
         <tr>
             <td>{{forloop.counter}}</td>
-            <td>{{i.fecha_registro|date:"d M Y"}}</td>
+            <td>{{i.fecha|date:"d/m/Y"}}</td>
             <td>{{i.Lote|upper}}</td>
             {% for j in results %}       
                 {% if j.producto_id == i.id %}

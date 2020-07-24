@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.forms import User
+from datetime import date
 # Create your models here.
 class Cliente(models.Model):
 	Nombre=models.CharField(max_length=150)
@@ -35,6 +36,7 @@ class Producto(models.Model):
 	Usuario=models.ForeignKey(User,on_delete = models.CASCADE)
 	codigo_ingreso = models.ForeignKey(Codigo, on_delete = models.CASCADE,blank=True, null=True)
 	estado=models.BooleanField(default=True, help_text="Desactive esta casilla para dar de baja este producto")
+	fecha = models.DateField(default=date.today)
 	fecha_registro = models.DateTimeField(auto_now_add=True)
 	def __str__(self):
 		return self.Lote

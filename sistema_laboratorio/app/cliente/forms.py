@@ -20,6 +20,7 @@ class FormProducto(ModelForm):
 class FormProductoUpdate(ModelForm):
 	class Meta():
 		model = Producto
+		fields=('Lote','fecha',)
 		exclude=('Usuario','Cliente','codigo_ingreso')
 
 class FormResultUpdate(ModelForm):

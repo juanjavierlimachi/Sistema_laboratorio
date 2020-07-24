@@ -263,7 +263,7 @@ def deleteResult(request, id_result):
 
 def printCertify(request ,ingreso_id):
 	ingreso = get_object_or_404(Codigo, pk=ingreso_id)
-	productos=Producto.objects.filter(codigo_ingreso=ingreso_id).order_by('-id')
+	productos=Producto.objects.filter(codigo_ingreso=ingreso_id)
 	results = getResult()
 	getTotal = getTotales(productos, results)
 	dic={
@@ -301,10 +301,10 @@ def printReportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 		return HttpResponse("Error: La Fecha Inicio No pueder ser Mayor a la Fecha Final.")
 	if int(clients_id) == 0:# if you don't choose any customer
 		cliente = False
-		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
+		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True).order_by('fecha')
 	else:
 		cliente = Cliente.objects.get(id=int(clients_id))
-		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))	
+		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id)).order_by('fecha')	
 	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
 	total_general = getTotalGeneral(products, results)
 	getTotal = getTotales(products, results)
@@ -338,7 +338,7 @@ def printReportTotal(request, clients_id, fecha_inicio, fecha_fin):
 		try:
 			precio = Precio.objects.get(Cliente_id = clients_id)
 		except Precio.DoesNotExist:
-			return HttpResponse('El Cliente no tiene precio agregados')
+			return HttpResponse('<h1>Por favor registre los precios del cliente %s para poder generar el reporte.</h1>'%(cliente.Nombre.upper()))
 		
 		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))	
 	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
@@ -461,7 +461,9 @@ def getTotalGeneral(products, results):
 
 def reportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 	fecha_inicio = datetime.strptime(fecha_inicio,"%d-%m-%Y")
+	print('Fecha inicio: ',fecha_inicio)
 	fecha_fin = datetime.strptime(fecha_fin,"%d-%m-%Y")
+	print('Fecha final: ', fecha_fin)
 	fecha_fin = fecha_fin + timedelta(days=1)
 	if str(fecha_inicio) > str(fecha_fin):
 		return HttpResponse("Error: La Fecha Inicio No pueder ser Mayor a la Fecha Final.")

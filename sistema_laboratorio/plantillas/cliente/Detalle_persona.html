@@ -2,11 +2,16 @@
 	form input{
 		width: 80px;
 	}
+	form #id_fecha{
+		width: 90px;
+	}
 </style>
 {% load bootstrap %}
 <div class="table-responsive">
 <div class="btn-group">
+	{% if user.is_superuser %}
 	<button class="btn btn-primary" data-toggle="modal" onclick="detalleClient('/update-client/{{cliente.id}}','EDITAR LOS DATOS DEL CLIENTE')" data-target="#exampleModal">Editar Datos Del Cliente</button>
+	{% endif %}
 	{% if precio %}
 	<button class="btn btn-info" data-toggle="modal" onclick="detalleClient('/update-precios/{{precio.id}}','AGREGAR PRECIOS')" data-target="#exampleModal">Ediar Precios</button>
 	{% else %}
