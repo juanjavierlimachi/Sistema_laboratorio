@@ -41,7 +41,7 @@
         <tbody>
             {% for producto in products %}
                 <tr>
-                    <td align="center">{{producto.fecha_registro|date:"d M Y"}}</td>
+                    <td align="center">{{producto.fecha|date:"d/m/Y"}}</td>
                     <td align="center">{{producto.Lote}}</td>
                     {% for resultado in results %}
                         {% if resultado.producto_id == producto.id %}
