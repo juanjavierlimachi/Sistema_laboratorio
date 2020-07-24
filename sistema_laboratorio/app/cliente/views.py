@@ -344,7 +344,11 @@ def printReportTotal(request, clients_id, fecha_inicio, fecha_fin):
 	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
 	getTotal = getTotales(products, results)
 	total_general = getTotalGeneral(products, results)
-	calcularPrecios = calcularPreciosTotales(clients_id, getTotal)
+	calcularPrecios = {}
+	if precio:	
+		calcularPrecios = calcularPreciosTotales(clients_id, getTotal)
+	else:
+		return HttpResponse('<h1>Selecione un cliente para generar el resumen</h1>')
 	totalPrecio = getTotalPrecio(calcularPrecios)
 	dic={
 		'cliente':cliente,
