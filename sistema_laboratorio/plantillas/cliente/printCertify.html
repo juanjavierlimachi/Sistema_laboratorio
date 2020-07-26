@@ -32,6 +32,7 @@
                 <table style="max-width: 60%; margin: auto; margin-top: 100px; font-size: 4;">
                     <thead>
                         <th width="130px">Fecha</th>
+
                         <th width="152px">Lote</th>
                         {% for key, value in getTotal.items %}
                             {% if not value == 0 %}
@@ -44,6 +45,7 @@
                                 </th>
                             {% else %}
                                 <th width="0%"></th>
+
                             {% endif %}
                         {% endfor %} 
                     </thead>
@@ -52,6 +54,7 @@
                         <tr>
                             <td align="center">{{i.fecha|date:" d/m/Y"}}</td>
                             <td align="center">{{i.Lote|upper}}</td>
+
                             {% for j in results %}       
                                 {% if j.producto_id == i.id %}
                                         <td align="center">{{j.Zinc|default_if_none:" "}}</td>

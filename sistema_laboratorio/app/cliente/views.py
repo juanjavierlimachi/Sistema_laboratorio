@@ -349,6 +349,7 @@ def printReportTotal(request, clients_id, fecha_inicio, fecha_fin):
 		calcularPrecios = calcularPreciosTotales(clients_id, getTotal)
 	else:
 		return HttpResponse('<h1>Selecione un cliente para generar el resumen</h1>')
+
 	totalPrecio = getTotalPrecio(calcularPrecios)
 	dic={
 		'cliente':cliente,
@@ -398,6 +399,7 @@ def calcularPreciosTotales(clients_id, getTotal):
 	calcularPrecios['Sb'] = antimonio
 	calcularPrecios['As'] = arsenico
 	calcularPrecios['Fe'] = hierro
+
 	return calcularPrecios
 
 def getTotales(products, results):
