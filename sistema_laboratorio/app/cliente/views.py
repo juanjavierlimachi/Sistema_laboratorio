@@ -383,15 +383,21 @@ def calcularPreciosTotales(clients_id, getTotal):
 	estanio = precio.Estanio * getTotal['Sn']
 	cobre = precio.Cobre * getTotal['Cu']
 	h2o = precio.H2O * getTotal['H2O']
+
+	antimonio = precio.Antimonio * getTotal['Sb']
+	arsenico = precio.Arsenico * getTotal['As']
+	hierro = precio.Hierro * getTotal['Fe']
+
 	calcularPrecios['Zn'] = zinc
 	calcularPrecios['DM.Ag'] = plata
 	calcularPrecios['Pb'] = plomo
 	calcularPrecios['Sn'] = estanio
 	calcularPrecios['Cu'] = cobre
 	calcularPrecios['H2O'] = h2o
-	calcularPrecios['Sb'] = estanio
-	calcularPrecios['As'] = cobre
-	calcularPrecios['Fe'] = h2o
+
+	calcularPrecios['Sb'] = antimonio
+	calcularPrecios['As'] = arsenico
+	calcularPrecios['Fe'] = hierro
 	return calcularPrecios
 
 def getTotales(products, results):
