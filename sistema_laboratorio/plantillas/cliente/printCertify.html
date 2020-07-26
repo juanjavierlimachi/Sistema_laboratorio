@@ -11,16 +11,16 @@
     </style>
 </head>
 <body>
-    
+    <br>
     <table style="font-size: 5;">
         <tr><br><br><br>
             <td></td>
             <td><br><br><br></td>
-            <td align="right" colspan="2"><br>{{ingreso.id}}</td>
+            <td align="center"><br>{{ingreso.id}}</td>
         </tr>
         <tr>
             <td width="260px"></td>
-            <td colspan="4"> {{ingreso.cliente.Nombre|upper}}
+            <td colspan="2" align="center"> {{ingreso.cliente.Nombre|upper}}
                 <br><br><br><br><br><br>
             </td>
         </tr>
@@ -31,7 +31,8 @@
             <td>
                 <table style="max-width: 60%; margin: auto; margin-top: 100px; font-size: 4;">
                     <thead>
-                        <th width="150px">Fecha</th>
+                        <th width="130px">Fecha</th>
+
                         <th width="152px">Lote</th>
                         {% for key, value in getTotal.items %}
                             {% if not value == 0 %}
@@ -43,15 +44,17 @@
                                     {% endif %}
                                 </th>
                             {% else %}
-                                <th width="0px"></th>
+                                <th width="0%"></th>
+
                             {% endif %}
                         {% endfor %} 
                     </thead>
                     <tbody>
                         {% for i in productos %}
                         <tr>
-                            <td>{{i.fecha|date:" d/m/Y"}}</td>
-                            <td>{{i.Lote|upper}}</td>
+                            <td align="center">{{i.fecha|date:" d/m/Y"}}</td>
+                            <td align="center">{{i.Lote|upper}}</td>
+
                             {% for j in results %}       
                                 {% if j.producto_id == i.id %}
                                         <td align="center">{{j.Zinc|default_if_none:" "}}</td>

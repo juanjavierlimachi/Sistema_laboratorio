@@ -5,6 +5,12 @@
 	form #id_fecha{
 		width: 90px;
 	}
+	form #id_Lote{
+		width: 300px;
+	}
+	form label{
+		width: 70px;
+	}
 </style>
 {% load bootstrap %}
 <div class="table-responsive">
@@ -72,7 +78,7 @@
 
 		 <label for="">Cobre</label>
 		 {{formR.Cobre}}
-
+		 <br><br>
 		 <label for="">H2O</label>
 		 {{formR.H2O}}
 
@@ -84,8 +90,8 @@
 
 		 <label for="">Hierro</label>
 		 {{formR.Hierro}}
+		 <div class="form-group row" style="margin-left: 5px;">
 
-		 <div class="form-group row" style="margin-left: 5px; float:right;">
 		   <button type="submit" class="btn btn-primary">Registrar</button>
 		   <button type="reset" class="btn btn-warning">Borrar</button>
 		 </div>
@@ -114,5 +120,21 @@
                 $(".modal-body").html(resp);  
             }
         });
-	}	
+	}
+	$( "#id_fecha" ).datepicker({
+		prevText: '<Ant',
+		nextText: 'Sig>',
+		currentText: 'Hoy',
+		monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+		monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+		dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+		dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+		dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+		weekHeader: 'Sm',
+		dateFormat: 'dd/mm/yy',
+		firstDay: 1,
+		isRTL: false,
+		showMonthAfterYear: false,
+		yearSuffix: ''
+	}); 	
 </script>

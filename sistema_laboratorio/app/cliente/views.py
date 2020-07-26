@@ -344,7 +344,12 @@ def printReportTotal(request, clients_id, fecha_inicio, fecha_fin):
 	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
 	getTotal = getTotales(products, results)
 	total_general = getTotalGeneral(products, results)
-	calcularPrecios = calcularPreciosTotales(clients_id, getTotal)
+	calcularPrecios = {}
+	if precio:	
+		calcularPrecios = calcularPreciosTotales(clients_id, getTotal)
+	else:
+		return HttpResponse('<h1>Selecione un cliente para generar el resumen</h1>')
+
 	totalPrecio = getTotalPrecio(calcularPrecios)
 	dic={
 		'cliente':cliente,
@@ -379,15 +384,22 @@ def calcularPreciosTotales(clients_id, getTotal):
 	estanio = precio.Estanio * getTotal['Sn']
 	cobre = precio.Cobre * getTotal['Cu']
 	h2o = precio.H2O * getTotal['H2O']
+
+	antimonio = precio.Antimonio * getTotal['Sb']
+	arsenico = precio.Arsenico * getTotal['As']
+	hierro = precio.Hierro * getTotal['Fe']
+
 	calcularPrecios['Zn'] = zinc
 	calcularPrecios['DM.Ag'] = plata
 	calcularPrecios['Pb'] = plomo
 	calcularPrecios['Sn'] = estanio
 	calcularPrecios['Cu'] = cobre
 	calcularPrecios['H2O'] = h2o
-	calcularPrecios['Sb'] = estanio
-	calcularPrecios['As'] = cobre
-	calcularPrecios['Fe'] = h2o
+
+	calcularPrecios['Sb'] = antimonio
+	calcularPrecios['As'] = arsenico
+	calcularPrecios['Fe'] = hierro
+
 	return calcularPrecios
 
 def getTotales(products, results):

@@ -26,17 +26,21 @@
     </table>
     <table style="font-size: 5;" class="table table-hover table-striped table-bordered dt-responsive datatable">
         <thead>
-        <tr>
-            <th width="152px">Fecha</th>
-            <th width="152px">Lote</th>
+            <th width="50%">Fecha</th>
+            <th width="60%">Lote</th>
             {% for key, value in getTotal.items %}
                 {% if not value == 0 %}
-                <th width="122px">%{{ key }}</th>
+                    <th width="25%">
+                        {% if not key == 'DM.Ag' %}
+                            %{{ key }}
+                        {% else %}
+                            {{ key }}
+                        {% endif %}
+                    </th>
                 {% else %}
                 <th width="0px"></th>
                 {% endif %}
             {% endfor %} 
-        </tr>
         </thead>
         <tbody>
             {% for producto in products %}
@@ -80,7 +84,7 @@
                     {% if not value == 0 %}
                         <td align="center">{{ value }}</td>
                     {% else %}
-                        <th width="0 px"></th>
+                        <th width="0%"></th>
                     {% endif %}
                 {% endfor %}  
             </tr>
