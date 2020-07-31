@@ -54,7 +54,7 @@ def updateClient(request, id_cliente):
 
 def DetalleCliente(request,id):#id cliente
 	cliente = get_object_or_404(Cliente, pk=id)
-	productos=Producto.objects.filter(Cliente_id=id).order_by('-id')
+	productos=Producto.objects.filter(Cliente_id=id)
 
 	try:
 		precio = Precio.objects.get(Cliente_id = id)
@@ -94,6 +94,10 @@ def DetalleCliente(request,id):#id cliente
 def DetalleIngresoCliente(request ,ingreso_id):
 	ingreso = get_object_or_404(Codigo, pk=ingreso_id)
 	productos=Producto.objects.filter(codigo_ingreso=ingreso_id).order_by('-id')
+	try:
+		precio = Precio.objects.get(Cliente_id = int(productos[0].Cliente.id))
+	except Precio.DoesNotExist:
+		precio = False
 	Usuario=Producto(Usuario=request.user)
 	if request.method == 'POST':
 		forms=FormProducto(request.POST,instance=Usuario)
@@ -119,7 +123,8 @@ def DetalleIngresoCliente(request ,ingreso_id):
 		'productos':productos,
 		'results':getResult(),
 		'forms':forms,
-		'formR':formR
+		'formR':formR,
+		'precio':precio
 	}
 	return render(request,'cliente/DetalleIngresoCliente.html',dic)
 
@@ -441,7 +446,6 @@ def getTotales(products, results):
 	getTotal['Sb'] = antimonio
 	getTotal['As'] = arsenico
 	getTotal['Fe'] = hierro
-	print(getTotal)
 	return getTotal
 
 def getTotalGeneral(products, results):
@@ -471,9 +475,7 @@ def getTotalGeneral(products, results):
 
 def reportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 	fecha_inicio = datetime.strptime(fecha_inicio,"%d-%m-%Y")
-	print('Fecha inicio: ',fecha_inicio)
 	fecha_fin = datetime.strptime(fecha_fin,"%d-%m-%Y")
-	print('Fecha final: ', fecha_fin)
 	fecha_fin = fecha_fin + timedelta(days=1)
 	if str(fecha_inicio) > str(fecha_fin):
 		return HttpResponse("Error: La Fecha Inicio No pueder ser Mayor a la Fecha Final.")

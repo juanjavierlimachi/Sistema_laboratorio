@@ -37,6 +37,22 @@
                     <strong style="color:red">Baja</strong>
                 {% endif %}</td>
         </tr>
+        
+        {% if precio %}
+	<tr>
+		<td colspan="8"><br><strong>Precios por producto:</strong>
+			<strong>Zinc: </strong>{{precio.Zinc}}
+			<strong>Plata: </strong>{{precio.Plata}}
+			<strong>Plomo: </strong>{{precio.Plomo}}
+			<strong>Estaño: </strong>{{precio.Estanio}}
+			<strong>Cobre: </strong>{{precio.Cobre}}
+			<strong>H2O: </strong>{{precio.H2O}}
+			<strong>Antimonio: </strong>{{precio.Antimonio}}
+			<strong>Arsenico: </strong>{{precio.Arsenico}}
+			<strong>Hierro: </strong>{{precio.Hierro}}
+		</td>
+	</tr>
+	{% endif %}
     </table>
     <div class="row">
         <form method="POST" action="/detalle-ingreso-cliente/{{ingreso.id}}/" role="form" class="form-inline" id="formresult" data-parsley-validate >
