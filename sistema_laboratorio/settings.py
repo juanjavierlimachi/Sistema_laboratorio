@@ -24,7 +24,7 @@ SECRET_KEY = 'z-a#w_#fcd+jx^i3dw+esi)lrc1mjr6z9yuf8dlee$gp_ns-g!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 ALLOWED_HOSTS = ['*']
 
 
@@ -76,14 +76,14 @@ WSGI_APPLICATION = 'sistema_laboratorio.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-""" DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-} """
+}
 
-DATABASES = {
+""" DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'lab',
@@ -92,7 +92,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '',
     }
-}
+} """
 
 
 # Password validation
@@ -126,17 +126,24 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
+import dj_database_url
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-STATIC_URL = '/static/'
 
-TEMPLATE_DIRS =(os.path.join(BASE_DIR,"plantillas"),)
+TEMPLATE_DIRS =(os.path.join(RUTA_PROYECTO,"plantillas"),)
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static")
+
+STATIC_URL = '/static/'
+MEDIA_ROOT=os.path.join(RUTA_PROYECTO,"media")
+MEDIA_URL = '/media/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 STATICFILES_DIRS = [#aumente
     os.path.join(RUTA_PROYECTO, "static"),#esta linea es lo que redireciona a los archivos staticos
 ]
-MEDIA_ROOT=os.path.join(RUTA_PROYECTO,"media")
-MEDIA_URL = '/media/'
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
