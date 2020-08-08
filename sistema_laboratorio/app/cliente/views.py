@@ -533,6 +533,12 @@ def updatePrecio(request, precio_id):
 		forms=FormPrecio(instance=dato)
 	return render(request,'cliente/updatePrecio.html',{'forms':forms,'dato':dato})
 
+def deleteIngreso(request, ingreso_id):
+	getIngreso = Codigo.objects.get(id=int(ingreso_id))
+	if request.method == 'POST':
+		getIngreso.delete()
+		return HttpResponse("Se eliminó correctamente")
+	return render(request,'cliente/deleteIngreso.html',{'getIngreso':getIngreso})
 
 class ReportAnalisis(View):
 	def cabecera(self,pdf):

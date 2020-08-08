@@ -1,0 +1,25 @@
+<script type="text/javascript">
+    $('.container #demo-form2').submit(function(e){
+           e.preventDefault();
+           $.ajax({
+               type:'POST',
+               url: $(this).attr("action"),
+               data: $(this).serialize(),
+               success:function(resp){
+                $(".modal-body").html(resp); 
+                menuLink('/RegistrarCli');
+               }
+           });
+       });
+   </script>
+<div class="container">
+    <form method="POST" action="/delete-ingreso/{{getIngreso.id}}/" role="form" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" >
+        {% csrf_token %}
+                  <h4>Esta seguro de eliminar el certificado Nro. <strong>{{getIngreso.id}} </strong><br>
+                    Perteneciente a: <strong>{{getIngreso.cliente.Nombre|upper}}</strong></h4>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-danger">Confirmar</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+</div>

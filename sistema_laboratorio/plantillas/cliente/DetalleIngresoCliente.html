@@ -37,22 +37,23 @@
                     <strong style="color:red">Baja</strong>
                 {% endif %}</td>
         </tr>
-        
+    {% if user.is_superuser %}  
         {% if precio %}
-	<tr>
-		<td colspan="8"><br><strong>Precios por producto:</strong>
-			<strong>Zinc: </strong>{{precio.Zinc}}
-			<strong>Plata: </strong>{{precio.Plata}}
-			<strong>Plomo: </strong>{{precio.Plomo}}
-			<strong>Estaño: </strong>{{precio.Estanio}}
-			<strong>Cobre: </strong>{{precio.Cobre}}
-			<strong>H2O: </strong>{{precio.H2O}}
-			<strong>Antimonio: </strong>{{precio.Antimonio}}
-			<strong>Arsenico: </strong>{{precio.Arsenico}}
-			<strong>Hierro: </strong>{{precio.Hierro}}
-		</td>
-	</tr>
-	{% endif %}
+        <tr>
+            <td colspan="8"><br><strong>Precios por producto:</strong>
+                <strong>Zinc: </strong>{{precio.Zinc}}
+                <strong>Plata: </strong>{{precio.Plata}}
+                <strong>Plomo: </strong>{{precio.Plomo}}
+                <strong>Estaño: </strong>{{precio.Estanio}}
+                <strong>Cobre: </strong>{{precio.Cobre}}
+                <strong>H2O: </strong>{{precio.H2O}}
+                <strong>Antimonio: </strong>{{precio.Antimonio}}
+                <strong>Arsenico: </strong>{{precio.Arsenico}}
+                <strong>Hierro: </strong>{{precio.Hierro}}
+            </td>
+        </tr>
+        {% endif %}
+    {% endif %}
     </table>
     <div class="row">
         <form method="POST" action="/detalle-ingreso-cliente/{{ingreso.id}}/" role="form" class="form-inline" id="formresult" data-parsley-validate >
@@ -145,7 +146,10 @@
         {% endfor %}
         </tbody>
         <tfoot>
-            <tr><td colspan="12"></td><td><button type="button" href="#" id="print"onclick="printCertify('/print-certify/{{ingreso.id}}','')" class="btn btn-success">Imprimir</button></td></tr>
+            <tr>
+                <td><button class="btn btn-danger" data-target="#exampleModal" data-toggle="modal" onclick="detalleClient('delete-ingreso/{{ingreso.id}}','Eliminar Certificado Nro. {{ingreso.id}}')">Eliminar el Certificado</button></td>
+                <td colspan="11"></td><td><button type="button" href="#" id="print" onclick="printCertify('/print-certify/{{ingreso.id}}','')" class="btn btn-success">Imprimir</button></td>
+            </tr>
         </tfoot>
     </table>
     </div>

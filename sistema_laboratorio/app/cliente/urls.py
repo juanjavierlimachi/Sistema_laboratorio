@@ -32,7 +32,7 @@ urlpatterns = [
 #ingresos
 	path('detalle-ingreso-cliente/<int:ingreso_id>/',views.DetalleIngresoCliente),
 	path('new-producto-a-ingreso/<int:ingreso_id>/',views.NewProductIngreso),
-
+	path('delete-ingreso/<int:ingreso_id>/',views.deleteIngreso, name='deleteIngreso'),
 	path('search-code',views.searchCode),
 #precios
 	path('update-precios/<int:precio_id>/',views.updatePrecio),

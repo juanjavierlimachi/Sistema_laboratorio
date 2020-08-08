@@ -17,11 +17,11 @@
 <div class="btn-group">
 	{% if user.is_superuser %}
 	<button class="btn btn-primary" data-toggle="modal" onclick="detalleClient('/update-client/{{cliente.id}}','EDITAR LOS DATOS DEL CLIENTE')" data-target="#exampleModal">Editar Datos Del Cliente</button>
-	{% endif %}
-	{% if precio %}
-	<button class="btn btn-info" data-toggle="modal" onclick="detalleClient('/update-precios/{{precio.id}}','AGREGAR PRECIOS')" data-target="#exampleModal">Ediar Precios</button>
-	{% else %}
-	<button class="btn btn-success" data-toggle="modal" onclick="detalleClient('/add-precios/{{cliente.id}}','AGREGAR PRECIOS')" data-target="#exampleModal">Agregar Precios </button>
+		{% if precio %}
+		<button class="btn btn-info" data-toggle="modal" onclick="detalleClient('/update-precios/{{precio.id}}','AGREGAR PRECIOS')" data-target="#exampleModal">Ediar Precios</button>
+		{% else %}
+		<button class="btn btn-success" data-toggle="modal" onclick="detalleClient('/add-precios/{{cliente.id}}','AGREGAR PRECIOS')" data-target="#exampleModal">Agregar Precios </button>
+		{% endif %}
 	{% endif %}
 </div>
 <table class="table table-hover table-striped">
@@ -42,21 +42,23 @@
 				<strong style="color:red">Baja</strong>
 			{% endif %}</td>
 	</tr>
-	{% if precio %}
-	<tr>
-		<td colspan="8"><br><strong>Precios por producto:</strong>
-			<strong>Zinc: </strong>{{precio.Zinc}}
-			<strong>Plata: </strong>{{precio.Plata}}
-			<strong>Plomo: </strong>{{precio.Plomo}}
-			<strong>Estaño: </strong>{{precio.Estanio}}
-			<strong>Cobre: </strong>{{precio.Cobre}}
-			<strong>H2O: </strong>{{precio.H2O}}
-			<strong>Antimonio: </strong>{{precio.Antimonio}}
-			<strong>Arsenico: </strong>{{precio.Arsenico}}
-			<strong>Hierro: </strong>{{precio.Hierro}}
-		</td>
-	</tr>
-	{% endif %}	
+	{% if user.is_superuser %}
+		{% if precio %}
+		<tr>
+			<td colspan="8"><br><strong>Precios por producto:</strong>
+				<strong>Zinc: </strong>{{precio.Zinc}}
+				<strong>Plata: </strong>{{precio.Plata}}
+				<strong>Plomo: </strong>{{precio.Plomo}}
+				<strong>Estaño: </strong>{{precio.Estanio}}
+				<strong>Cobre: </strong>{{precio.Cobre}}
+				<strong>H2O: </strong>{{precio.H2O}}
+				<strong>Antimonio: </strong>{{precio.Antimonio}}
+				<strong>Arsenico: </strong>{{precio.Arsenico}}
+				<strong>Hierro: </strong>{{precio.Hierro}}
+			</td>
+		</tr>
+		{% endif %}
+	{% endif %}
 </table>
 
 </div>
