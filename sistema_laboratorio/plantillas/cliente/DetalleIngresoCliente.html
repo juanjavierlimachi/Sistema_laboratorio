@@ -147,7 +147,11 @@
         </tbody>
         <tfoot>
             <tr>
-                <td><button class="btn btn-danger" data-target="#exampleModal" data-toggle="modal" onclick="detalleClient('delete-ingreso/{{ingreso.id}}','Eliminar Certificado Nro. {{ingreso.id}}')">Eliminar el Certificado</button></td>
+                <td>
+                    {% if user.is_superuser %}
+                    <button class="btn btn-danger" data-target="#exampleModal" data-toggle="modal" onclick="detalleClient('delete-ingreso/{{ingreso.id}}','Eliminar Certificado Nro. {{ingreso.id}}')">Eliminar el Certificado</button>
+                    {% endif %}
+                </td>
                 <td colspan="11"></td><td><button type="button" href="#" id="print" onclick="printCertify('/print-certify/{{ingreso.id}}','')" class="btn btn-success">Imprimir</button></td>
             </tr>
         </tfoot>

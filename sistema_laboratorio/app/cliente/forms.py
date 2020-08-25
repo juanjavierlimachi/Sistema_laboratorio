@@ -49,3 +49,7 @@ class FormPrecio(ModelForm):
 	class Meta():
 		model = Precio
 		exclude=('estado','Cliente')
+
+class FormEmail(forms.Form):
+	Descripcion = forms.CharField(required=True, label="Descripción", help_text="Escriba un breve comentario.",widget=forms.Textarea())
+	Archivo = forms.FileField(required=True, label="Adjuntar Archivo", help_text="Seleccione un archivo a enviar.")

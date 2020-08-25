@@ -20,6 +20,9 @@
 <h2 colspan="5" align="center"><br>REPORTE DE ANALISIS DE MINERALES</h2>
 <div class="table-responsive" id="report"> </div>
 <script type="text/javascript">
+	function Espera(){
+            $("#report").html('<div id="icono"><img src="/static/img/log.gif">Espere por favor, Opteniendo datos</img></div>');
+    }
 	function printReportGeneral(){
 		var get_fecha = FechaValidar($("#ini").val(), $("#fin").val(), $("#cliente").val());
 		if(get_fecha.length > 0)
@@ -33,6 +36,7 @@
 			$.ajax({
 				type:'GET',
 				url:'report-general/'+get_fecha[0]+'/'+get_fecha[1]+'/'+get_fecha[2]+'/',
+				beforeSend:Espera,
 				success:function(resp){
 				$("#report").html(resp);
 				}
