@@ -37,4 +37,6 @@ urlpatterns = [
 #precios
 	path('update-precios/<int:precio_id>/',views.updatePrecio),
 	path('add-precios/<int:cliente_id>/',views.addPrecios),
+#email
+	path('send-email/<int:cliente_id>/',views.sendEmail),
 ]

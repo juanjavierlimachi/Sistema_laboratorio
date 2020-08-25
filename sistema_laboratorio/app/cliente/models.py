@@ -7,6 +7,7 @@ class Cliente(models.Model):
 	Direccion =models.CharField(max_length=100)
 	Telefono = models.PositiveIntegerField(blank=True, null=True, help_text="Opcional")
 	Nit = models.BigIntegerField(blank=True, null=True,help_text="Opcional")
+	Correo = models.EmailField(blank=True, null=True, help_text="Opcional")
 	Particular = models.BooleanField()
 	estado=models.BooleanField(default=True)
 	fecha_registro = models.DateTimeField(auto_now_add=True)

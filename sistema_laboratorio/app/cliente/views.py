@@ -540,6 +540,55 @@ def deleteIngreso(request, ingreso_id):
 		return HttpResponse("Se eliminó correctamente")
 	return render(request,'cliente/deleteIngreso.html',{'getIngreso':getIngreso})
 
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
+""" def sendEmail(request, cliente_id):
+	cliente = Cliente.objects.get(id = int(cliente_id))
+	if request.method == 'POST' and cliente.Correo != None:
+		forms=FormPrecio(request.POST, request.FILES)
+		print(request.FILES['Archivo'])
+		send_mail(
+				'Reportes', 
+				'Le envio los reportes del mes', 
+				settings.EMAIL_HOST_USER,
+				[cliente.Correo],
+				request.FILES['Archivo']
+			)
+		return HttpResponse("Se envió el Archivo Correctamente")
+	else:
+		messages.error(request, "Error al procesar el formulario")
+	forms = FormEmail()
+	return render(request, 'cliente/sendEmail.html',{'forms':forms,'cliente':cliente}) """
+
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
+from smtplib import SMTP
+from django.core.mail import EmailMessage
+
+def sendEmail(request, cliente_id):
+	cliente = Cliente.objects.get(id = int(cliente_id))
+	if request.method == 'POST' and cliente.Correo != None:
+		csvfile = StringIO()
+		forms=FormPrecio(request.POST, request.FILES)
+		a  = request.FILES["Archivo"]
+		email = EmailMessage(
+			'Laboratorio Químico 1ro de Mayo',
+			request.POST['Descripcion']+' Cualquier consulta responder al Correo: lab.quim.1mayo@gmail.com ',
+			settings.EMAIL_HOST_USER,
+			[cliente.Correo],
+		)
+		email.attach(a.name, a.read(), a.content_type)
+		a.close()
+		#email.attach_file(a.name, a.read(), a.content_type)
+		email.send()
+		return HttpResponse("Se envió el Archivo Correctamente")
+	else:
+		messages.error(request, "Error al procesar el formulario")
+	forms = FormEmail()
+	return render(request, 'cliente/sendEmail.html',{'forms':forms,'cliente':cliente})
+
 class ReportAnalisis(View):
 	def cabecera(self,pdf):
 		#Utilizamos el archivo logo_django.png que está guardado en la carpeta media/imagenes

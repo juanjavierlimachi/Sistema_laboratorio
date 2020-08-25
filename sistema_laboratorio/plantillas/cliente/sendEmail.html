@@ -1,0 +1,44 @@
+{% load bootstrap %}
+ <script type="text/javascript">
+   $('#demo-form2').submit(function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:$(this).attr("action"),
+            data: new FormData(this),
+            contentType: false,
+            processData: false,
+            beforeSend:enviando,
+            success:function(resp){
+                $(".modal-body").html(resp);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+              alert("Error al enviar intente nuevamente gracias");
+            }
+        });        
+    });
+    function enviando(){
+      $(".modal-body").html('<div id="icono"><img src="/static/img/log.gif">Enviando mensaje espere un momento.</img></div>');
+    }
+ </script>
+ <style>
+   #id_Archivo{width: 350px;}
+ </style>
+ <form method="POST" action="/send-email/{{cliente.id}}/" role="form" id="demo-form2" enctype="multipart/form-data" data-parsley-validate class="form-horizontal">
+  {% csrf_token %}
+    {% if cliente.Correo %}
+    <label for="id_Correo">Correo:</label> <strong>{{cliente.Correo}}</strong><br>
+    {% else %}
+      <p style="color: red;">El cliente no tiene registrado su correo, Por favor Edite los datos del cliente para actualizar su información</p>
+    {% endif %}
+    {{forms|bootstrap_horizontal:'col-xs-4'}}
+
+     <div class="ln_solid"></div>
+      <div class="form-group">
+        <div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="reset" class="btn btn-warning">Borrar</button>
+        </div>
+      </div>
+  </form>

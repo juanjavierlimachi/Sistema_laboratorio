@@ -40,7 +40,17 @@
   <!--   <link href="{% static 'css/fixedHeader.bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/responsive.bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/scroller.bootstrap.min.css' %}" rel="stylesheet"> -->
-
+    <style>
+      #icono{
+        display: flex;
+        flex-wrap:wrap;
+        flex-direction: column;
+        align-content: center;
+      }
+      #icono img{
+        width: 100px; height: 100px;
+      }
+    </style>
     <script type="text/javascript">
 
 
@@ -48,6 +58,7 @@
         $.ajax({
           type:'GET',
           url:route,
+          beforeSend:Espera,
           success:function(resp){
             $(".x_content").html(resp);
           }
@@ -64,17 +75,18 @@
         });
       }
       function Espera(){
-            $(".x_content").html('<img src="/static/img/log.gif" id="icono"></img><br>Procesando...');
-        }
+            $(".x_content").html('<div id="icono"><img src="/static/img/log.gif">Espere por favor, Opteniendo datos</img></div>');
+      }
         function menuModal(route,title) {
-        $("#exampleModal .modal-title").text(title);
-        $.ajax({
-              type:'GET',
-              url:route,
-              success:function(res){
-                $('#DatosContenidos').html(res);
-              }
-            });
+          $("#exampleModal .modal-title").text(title);
+          $.ajax({
+                type:'GET',
+                url:route,
+                success:function(res){
+                  setInterval($('#DatosContenidos').html(res),3000);
+                  
+                }
+              });
         }
     </script>
     

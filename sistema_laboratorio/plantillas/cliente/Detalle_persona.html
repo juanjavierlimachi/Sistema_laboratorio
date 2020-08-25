@@ -22,6 +22,7 @@
 		{% else %}
 		<button class="btn btn-success" data-toggle="modal" onclick="detalleClient('/add-precios/{{cliente.id}}','AGREGAR PRECIOS')" data-target="#exampleModal">Agregar Precios </button>
 		{% endif %}
+	<button class="btn btn-warning" data-toggle="modal" onclick="detalleClient('/send-email/{{cliente.id}}','Enviar Documento para : {{cliente.Nombre|title}}')" data-target="#exampleModal">Enviar Archivo por Correo</button>
 	{% endif %}
 </div>
 <table class="table table-hover table-striped">
@@ -36,11 +37,7 @@
 	<tr><td colspan="4"><br><strong>NIT: </strong>{{cliente.Nit|default_if_none:"--"}}</td>
 		<td colspan="2"><br><strong>Fecha de Registro:</strong> {{cliente.fecha_registro|date:"l d M Y"}}</td>
 		<td><br><strong>Cliente: </strong>{% if cliente.Particular %}Particular{% else %}Empresa{% endif %}</td>
-		<td colspan="1"><br>Estado:  {% if cliente.estado %}
-				<strong style="color:green">Activo</strong>
-			{% else %}
-				<strong style="color:red">Baja</strong>
-			{% endif %}</td>
+		<td colspan="1"><br>Correo: <strong>{{ cliente.Correo |default_if_none:"--"}}</strong></td>
 	</tr>
 	{% if user.is_superuser %}
 		{% if precio %}
