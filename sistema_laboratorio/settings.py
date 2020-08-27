@@ -153,7 +153,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'codemar.potosi@gmail.com'
+EMAIL_HOST_USER = 'javierjl.py@gmail.com'
 #EMAIL_HOST_PASSWORD = config('USER_MAIL_PASSWORD')
-EMAIL_HOST_PASSWORD = 'codemarpotosi'
+EMAIL_HOST_PASSWORD = 'sistemasuatf123'
 EMAIL_USE_TLS = True
