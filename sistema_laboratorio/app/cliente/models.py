@@ -71,5 +71,5 @@ class Resultado(models.Model):
 	producto=models.ForeignKey(Producto,on_delete = models.CASCADE)
 	estado=models.BooleanField(default=True)
 	fecha_registro = models.DateTimeField(auto_now_add=True)
-	def __unicode__(self):
-		return self.producto.Lote
+	def __str__(self):
+		return "%s"%(self.producto.codigo_ingreso)
