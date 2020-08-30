@@ -268,7 +268,7 @@ def deleteResult(request, id_result):
 
 def printCertify(request ,ingreso_id):
 	ingreso = get_object_or_404(Codigo, pk=ingreso_id)
-	productos=Producto.objects.filter(codigo_ingreso=ingreso_id)
+	productos=Producto.objects.filter(codigo_ingreso=ingreso_id).order_by('fecha')
 	results = getResult()
 	getTotal = getTotales(productos, results)
 	dic={
@@ -315,7 +315,7 @@ def printReportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 	getTotal = getTotales(products, results)
 	dic={
 		'cliente':cliente,
-		'products':products,
+		'products':products.order_by('fecha'),
 		'total_general':total_general,
 		'getTotal':getTotal,
 		'results':results,
@@ -490,7 +490,7 @@ def reportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 	getTotal = getTotales(products, results)
 	dic={
 			'cliente':cliente,
-			'products':products,
+			'products':products.order_by('fecha'),
 			'total_general':total_general,
 			'getTotal':getTotal,
 			'results':results,

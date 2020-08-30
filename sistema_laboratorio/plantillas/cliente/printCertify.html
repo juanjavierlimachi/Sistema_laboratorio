@@ -18,14 +18,7 @@
     <table style="font-size: 5;">
         <tr><br><br><br>
             <td style="font-size: 4; margin-left: 100px;" colspan="2"><br><br>
-                Potosí {{date_today|date}}<br>
-                <strong>
-                    {% if usuario.is_superuser %}
-                        Gefe de Laboratorio :
-                    {% else %}
-                        Usuario :
-                    {% endif %}
-                </strong> {{usuario.get_full_name|title}}
+                <br>
             </td>
             <td align="left"><br>{{ingreso.id}}</td>
         </tr>
@@ -41,7 +34,7 @@
         <tr>
             <td width="100px"></td>
             <td>
-                <table style="max-width: 60%; margin: auto; margin-top: 100px; font-size: 4;">
+                <table style="max-width: 60%; margin: auto; margin-top: 100px; font-size: 5;">
                     <thead>
                         <th width="130px">FECHA</th>
                         <th width="152px">LOTE</th>
@@ -61,13 +54,12 @@
                     </thead>
                     <tbody>
                         {% for i in productos %}
-                        <tr>
+                        <tr style="padding:0px">
                             <td align="center">{{i.fecha|date:" d/m/Y"}}</td>
                             <td align="center">{{i.Lote|upper}}</td>
                             {% for j in results %}       
                                 {% if j.producto_id == i.id %}
                                         <td align="center">{{j.Zinc|default_if_none:" "}}</td>
-
                                         <td align="center">{{j.Plata|default_if_none:" "}}</td>
                                         <td align="center">{{j.Plomo|default_if_none:" "}}</td>
 
@@ -84,10 +76,25 @@
                         </tr>
                         {% endfor %}
                     </tbody>
+                    <tr>
+                        <td colspan="3" style="font-size: 4;">
+                            Potosí {{date_today|date}}
+                        </td>
+                    </tr>
                 </table>
             </td>
             <td width="100px"></td>
-        </tr>
+            <tr>
+                <td colspan="3" style="text-align: center;">
+                    <br><br><br><br>
+                    <strong>
+                        {% if usuario.is_superuser %}
+                            Gefe de Laboratorio<br>
+                        {% else %}
+                            Usuario <br>
+                        {% endif %}
+                    </strong> {{usuario.get_full_name|title}}
+            </tr>
     </table><br>
 </body>
 </html>
