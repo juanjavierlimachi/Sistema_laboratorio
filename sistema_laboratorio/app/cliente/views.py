@@ -575,7 +575,7 @@ def sendEmail(request, cliente_id):
 		a  = request.FILES["Archivo"]
 		email = EmailMessage(
 			'Laboratorio Químico 1ro de Mayo',
-			request.POST['Descripcion']+' Cualquier consulta responder al Correo: lab.quim.1mayo@gmail.com ',
+			request.POST['Descripcion'],
 			settings.EMAIL_HOST_USER,
 			[cliente.Correo],
 		)
