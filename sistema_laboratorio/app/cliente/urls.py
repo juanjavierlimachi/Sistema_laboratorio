@@ -39,4 +39,6 @@ urlpatterns = [
 	path('add-precios/<int:cliente_id>/',views.addPrecios),
 #email
 	path('send-email/<int:cliente_id>/',views.sendEmail),
+	path('send-certify/<int:ingreso_id>/', views.sendCertify),
+	path('print-certify-email/<int:ingreso_id>/', views.printCertifyEmail),
 ]

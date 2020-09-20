@@ -110,12 +110,15 @@
               <div class="profile_info">
               {% if user.is_active and user.is_staff and user.is_superuser %}
                 <h2>Administrador</h2>
+                <h2 align="left">{{user.username}}</h2>
                 {% else %}
                   {% if user.is_active and user.is_staff and user.is_superuser == False %}
-                    <h2>Personal</h2>
+                    <h2>Cuenta Personal</h2>
+                    <h2 align="left">{{user.username}}</h2>
                   {% else %}
                     {% if user.is_active and user.is_staff == False and user.is_superuser == False %}
-                      <h2>Personal</h2>
+                      <h2>Cuenta Personal</h2>
+                      <h2 align="center">{{user.username}}</h2>
                     {% else %}
                       <h2>No activo</h2>
                     {% endif %}
@@ -185,7 +188,7 @@
               <ul class="nav navbar-nav navbar-right">
                 <li class="">
                   <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="images/img.jpg" alt="">
+                    
                     {{user.first_name|upper}}
                     <span class=" fa fa-angle-down"></span>
                   </a>
@@ -298,7 +301,6 @@
     <script src="{% static 'js/curvedLines.js' %}"></script>
     <!-- DateJS    -->
     <script src="{% static 'js/date.js' %}"></script>
-    <script src="{% static 'js/jquery.PrintArea.js' %}"></script>
     <!-- JQVMap -->
     <script src="{% static 'js/jquery.vmap.js' %}"></script>
     <script src="{% static 'js/jquery.vmap.world.js' %}"></script>

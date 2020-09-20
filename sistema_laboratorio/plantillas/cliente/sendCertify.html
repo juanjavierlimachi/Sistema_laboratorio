@@ -1,0 +1,37 @@
+<script type="text/javascript">
+    $('.container #demo-form2').submit(function(e){
+           e.preventDefault();
+           $.ajax({
+               type:'POST',
+               url: $(this).attr("action"),
+               data: $(this).serialize(),
+               beforeSend:enviando,
+               success:function(resp){
+                $(".modal-body").html(resp);
+                
+               },
+               error: function (xhr, ajaxOptions, thrownError) {
+                alert("Error al enviar intente nuevamente gracias");
+                }
+           });
+       });
+    function enviando(){
+      $(".modal-body").html('<div id="icono"><img src="/static/img/log.gif">Enviando mensaje espere un momento.</img></div>');
+    }
+   </script>
+<div class="container">
+    <form method="POST" action="/send-certify/{{getIngreso.id}}/" role="form" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" >
+        {% csrf_token %}
+                  <h4>Esta seguro de enviar el certificado Nro. <strong>{{getIngreso.id}} </strong><br>
+                    Correo: <strong>{{getIngreso.cliente.Correo|default_if_none:"No tiene Correo Electrónico"}}</strong><br>
+                    Perteneciente a: <strong>{{getIngreso.cliente.Nombre|upper}}</strong></h4>
+        <div class="modal-footer">
+            {% if getIngreso.cliente.Correo %}
+            <button type="submit" class="btn btn-success">Confirmar</button>
+            {% else %}
+            <button type="submit" class="btn btn-success" disabled>Confirmar</button>
+            {% endif %}
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+</div>
