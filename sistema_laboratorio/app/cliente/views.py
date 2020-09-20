@@ -266,24 +266,40 @@ def deleteResult(request, id_result):
 	result.delete()
 	return RegisterResultados(request, id_product)
 
-def printCertify(request ,ingreso_id):
+def allFilterProducts(ingreso_id):
+	productos = Producto.objects.filter(codigo_ingreso=ingreso_id).order_by('fecha','Lote')
+	return productos
+
+def getIngreso(ingreso_id):
 	ingreso = get_object_or_404(Codigo, pk=ingreso_id)
-	productos=Producto.objects.filter(codigo_ingreso=ingreso_id).order_by('fecha')
-	results = getResult()
-	getTotal = getTotales(productos, results)
+	return ingreso
+
+def printCertify(request ,ingreso_id):
 	dic={
-		'ingreso':ingreso,
-		'productos':productos,
-		'results':results,
-		'getTotal':getTotal,
+		'ingreso':getIngreso(ingreso_id),
+		'productos':allFilterProducts(ingreso_id),
+		'results':getResult(),
+		'getTotal':getTotales(allFilterProducts(ingreso_id), getResult()),
 		'date_today':datetime.now(),
 		'usuario':User.objects.get(id=int(request.user.id))
 	}
 	html=render_to_string('cliente/printCertify.html',dic)
 	return generar_pdf(html)
 
+def printCertifyEmail(request, ingreso_id):
+	dic={
+		'ingreso':getIngreso(ingreso_id),
+		'productos':allFilterProducts(ingreso_id),
+		'results':getResult(),
+		'getTotal':getTotales(allFilterProducts(ingreso_id), getResult()),
+		'date_today':datetime.now(),
+		'usuario':User.objects.get(id=int(request.user.id))
+	}
+	html=render_to_string('cliente/printCertifyEmail.html',dic)
+	return generar_pdf(html)
+
 def getResult():
-	result=Resultado.objects.all()
+	result=Resultado.objects.all().order_by('-id')
 	return result
 
 def generar_pdf(html):
@@ -301,26 +317,26 @@ def detailReport(request):
 def printReportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 	fecha_inicio = datetime.strptime(fecha_inicio,"%d-%m-%Y")
 	fecha_fin = datetime.strptime(fecha_fin,"%d-%m-%Y")
-	fecha_fin = fecha_fin + timedelta(days=1)
+	#fecha_fin = fecha_fin + timedelta(days=1)
 	if str(fecha_inicio) > str(fecha_fin):
 		return HttpResponse("Error: La Fecha Inicio No pueder ser Mayor a la Fecha Final.")
 	if int(clients_id) == 0:# if you don't choose any customer
 		cliente = False
-		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True).order_by('fecha')
+		products = Producto.objects.filter(fecha__range=(fecha_inicio,fecha_fin),estado = True).order_by('fecha')
 	else:
 		cliente = Cliente.objects.get(id=int(clients_id))
-		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id)).order_by('fecha')	
-	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
+		products = Producto.objects.filter(fecha__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id)).order_by('fecha')	
+	results = Resultado.objects.filter(estado = True)
 	total_general = getTotalGeneral(products, results)
 	getTotal = getTotales(products, results)
 	dic={
 		'cliente':cliente,
-		'products':products.order_by('fecha'),
+		'products':products.order_by('fecha','Lote'),
 		'total_general':total_general,
 		'getTotal':getTotal,
 		'results':results,
 		'fecha_inicio':fecha_inicio.date(),
-		'fecha_fin':fecha_fin.date() - timedelta(days=1),
+		'fecha_fin':fecha_fin.date(),
 		'date_today':datetime.now(),
 		'usuario':User.objects.get(id=int(request.user.id)),
 		'pagesize':'letter'
@@ -331,13 +347,13 @@ def printReportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 def printReportTotal(request, clients_id, fecha_inicio, fecha_fin):
 	fecha_inicio = datetime.strptime(fecha_inicio,"%d-%m-%Y")
 	fecha_fin = datetime.strptime(fecha_fin,"%d-%m-%Y")
-	fecha_fin = fecha_fin + timedelta(days=1)
+	#fecha_fin = fecha_fin + timedelta(days=1)
 	if str(fecha_inicio) > str(fecha_fin):
 		return HttpResponse("Error: La Fecha Inicio No pueder ser Mayor a la Fecha Final.")
 	if int(clients_id) == 0:# if you don't choose any customer
 		cliente = False
 		precio = False
-		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
+		products = Producto.objects.filter(fecha__range=(fecha_inicio,fecha_fin),estado = True)
 	else:
 		cliente = Cliente.objects.get(id=int(clients_id))
 		try:
@@ -345,15 +361,15 @@ def printReportTotal(request, clients_id, fecha_inicio, fecha_fin):
 		except Precio.DoesNotExist:
 			return HttpResponse('<h1>Por favor registre los precios del cliente %s para poder generar el reporte.</h1>'%(cliente.Nombre.upper()))
 		
-		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))	
-	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
+		products = Producto.objects.filter(fecha__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))	
+	results = Resultado.objects.filter(estado = True)
 	getTotal = getTotales(products, results)
 	total_general = getTotalGeneral(products, results)
 	calcularPrecios = {}
 	if precio:	
 		calcularPrecios = calcularPreciosTotales(clients_id, getTotal)
 	else:
-		return HttpResponse('<h1>Selecione un cliente para generar el resumen</h1>')
+		return HttpResponse('<h1>Seleccione un cliente para generar el resumen</h1>')
 	totalPrecio = getTotalPrecio(calcularPrecios)
 	dic={
 		'cliente':cliente,
@@ -365,7 +381,7 @@ def printReportTotal(request, clients_id, fecha_inicio, fecha_fin):
 		'total_general':total_general,
 		'calcularPrecios':calcularPrecios,
 		'fecha_inicio':fecha_inicio.date(),
-		'fecha_fin':fecha_fin.date() - timedelta(days=1),
+		'fecha_fin':fecha_fin.date(),
 		'date_today':datetime.now(),
 		'usuario':User.objects.get(id=int(request.user.id)),
 		'pagesize':'letter'
@@ -476,26 +492,26 @@ def getTotalGeneral(products, results):
 def reportGeneral(request, clients_id, fecha_inicio, fecha_fin):
 	fecha_inicio = datetime.strptime(fecha_inicio,"%d-%m-%Y")
 	fecha_fin = datetime.strptime(fecha_fin,"%d-%m-%Y")
-	fecha_fin = fecha_fin + timedelta(days=1)
+	#fecha_fin = fecha_fin + timedelta(days=1)
 	if str(fecha_inicio) > str(fecha_fin):
 		return HttpResponse("Error: La Fecha Inicio No pueder ser Mayor a la Fecha Final.")
 	if int(clients_id) == 0:# if you don't choose any customer
 		cliente = False
-		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
+		products = Producto.objects.filter(fecha__range=(fecha_inicio,fecha_fin),estado = True)
 	else:
 		cliente = Cliente.objects.get(id=int(clients_id))
-		products = Producto.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))
-	results = Resultado.objects.filter(fecha_registro__range=(fecha_inicio,fecha_fin),estado = True)
+		products = Producto.objects.filter(fecha__range=(fecha_inicio,fecha_fin),estado = True, Cliente_id=int(clients_id))
+	results = Resultado.objects.filter(estado = True)
 	total_general = getTotalGeneral(products, results)
 	getTotal = getTotales(products, results)
 	dic={
 			'cliente':cliente,
-			'products':products.order_by('fecha'),
+			'products':products.order_by('fecha','Lote'),
 			'total_general':total_general,
 			'getTotal':getTotal,
 			'results':results,
 			'fecha_inicio':fecha_inicio.date(),
-			'fecha_fin':fecha_fin.date() - timedelta(days=1),
+			'fecha_fin':fecha_fin.date(),
 			'date_today':datetime.now(),
 			'usuario':request.user.first_name.title()
 	}
@@ -534,32 +550,15 @@ def updatePrecio(request, precio_id):
 	return render(request,'cliente/updatePrecio.html',{'forms':forms,'dato':dato})
 
 def deleteIngreso(request, ingreso_id):
-	getIngreso = Codigo.objects.get(id=int(ingreso_id))
+	ingreso = getIngreso(ingreso_id)
 	if request.method == 'POST':
-		getIngreso.delete()
+		ingreso.delete()
 		return HttpResponse("Se eliminó correctamente")
-	return render(request,'cliente/deleteIngreso.html',{'getIngreso':getIngreso})
+	return render(request,'cliente/deleteIngreso.html',{'getIngreso':ingreso})
 
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
-""" def sendEmail(request, cliente_id):
-	cliente = Cliente.objects.get(id = int(cliente_id))
-	if request.method == 'POST' and cliente.Correo != None:
-		forms=FormPrecio(request.POST, request.FILES)
-		print(request.FILES['Archivo'])
-		send_mail(
-				'Reportes', 
-				'Le envio los reportes del mes', 
-				settings.EMAIL_HOST_USER,
-				[cliente.Correo],
-				request.FILES['Archivo']
-			)
-		return HttpResponse("Se envió el Archivo Correctamente")
-	else:
-		messages.error(request, "Error al procesar el formulario")
-	forms = FormEmail()
-	return render(request, 'cliente/sendEmail.html',{'forms':forms,'cliente':cliente}) """
 
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
@@ -581,13 +580,41 @@ def sendEmail(request, cliente_id):
 		)
 		email.attach(a.name, a.read(), a.content_type)
 		a.close()
-		#email.attach_file(a.name, a.read(), a.content_type)
 		email.send()
 		return HttpResponse("Se envió el Archivo Correctamente")
 	else:
 		messages.error(request, "Error al procesar el formulario")
 	forms = FormEmail()
 	return render(request, 'cliente/sendEmail.html',{'forms':forms,'cliente':cliente})
+
+def sendCertify(request, ingreso_id):
+	ingreso = getIngreso(ingreso_id)
+	if request.method == 'POST':
+
+		body = render_to_string('cliente/certiy.html',{
+			'ingreso':ingreso,
+			'productos':allFilterProducts(ingreso_id),
+			'results':getResult(),
+			'getTotal':getTotales(allFilterProducts(ingreso_id), getResult()),
+			'date_today':datetime.now(),
+			'usuario':User.objects.get(id=int(request.user.id))
+			},
+		)
+		email_message = EmailMessage(
+			subject = f'Reporte de Certificado Nro: {ingreso_id}',
+			body = body,
+			from_email = settings.EMAIL_HOST_USER,
+			to = [ingreso.cliente.Correo]
+		)
+		email_message.content_subtype = 'html'
+		email_message.send()
+		return HttpResponse('Mensaje enviado correctamente...!')
+	dic = {
+		'getIngreso':ingreso
+	}
+	return render(request, 'cliente/sendCertify.html',dic)
+
+
 
 class ReportAnalisis(View):
 	def cabecera(self,pdf):

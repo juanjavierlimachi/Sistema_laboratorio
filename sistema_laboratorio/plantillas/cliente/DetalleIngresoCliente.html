@@ -31,11 +31,7 @@
         <tr><td colspan="4"><br><strong>NIT: </strong>{{cliente.Nit|default_if_none:"--"}}</td>
             <td colspan="2"><br><strong>Fecha de Registro:</strong> {{ingreso.cliente.fecha_registro|date:"l d M Y"}}</td>
             <td><br><strong>Cliente: </strong>{% if ingreso.cliente.Particular %}Particular{% else %}Empresa{% endif %}</td>
-            <td colspan="1"><br>Estado:  {% if ingreso.cliente.estado %}
-                    <strong style="color:green">Activo</strong>
-                {% else %}
-                    <strong style="color:red">Baja</strong>
-                {% endif %}</td>
+            <td colspan="1"><br>Correo: <strong>{{ ingreso.cliente.Correo |default_if_none:"--"}}</strong></td>
         </tr>
     {% if user.is_superuser %}  
         {% if precio %}
@@ -92,7 +88,7 @@
                 </div>
             </form>
         </div>
-    <table class="table table-striped table-bordered">
+    <table class="table table-striped table-bordered table-hover">
         <thead  class="success">
             <th style="width: 3%;">Nro</th>
             <th>FECHA</th>
@@ -147,12 +143,18 @@
         </tbody>
         <tfoot>
             <tr>
+                <td></td>
                 <td>
                     {% if user.is_superuser %}
                     <button class="btn btn-danger" data-target="#exampleModal" data-toggle="modal" onclick="detalleClient('delete-ingreso/{{ingreso.id}}','Eliminar Certificado Nro. {{ingreso.id}}')">Eliminar el Certificado</button>
                     {% endif %}
                 </td>
-                <td colspan="11"></td><td><button type="button" href="#" id="print" onclick="printCertify('/print-certify/{{ingreso.id}}','')" class="btn btn-success">Imprimir</button></td>
+                <td>
+                    {% if user.is_superuser %}
+                    <button class="btn btn-default" data-target="#exampleModal" data-target="#staticBackdrop" data-toggle="modal" onclick="detalleClient('send-certify/{{ingreso.id}}','Código de Certificado. {{ingreso.id}}')">Enviar por correo</button>
+                    {% endif %}
+                </td>
+                <td colspan="9"></td><td><a type="button" href="/print-certify/{{ingreso.id}}" target="_blank" id="print" class="btn btn-success">Imprimir</a></td>
             </tr>
         </tfoot>
     </table>
@@ -209,9 +211,7 @@
           //console.log(str);
         
         });
-        function printCertify(route){
-            window.open(route);
-        }
+        
         $( "#id_fecha" ).datepicker({
             prevText: '<Ant',
             nextText: 'Sig>',

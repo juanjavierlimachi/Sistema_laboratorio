@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte Certificado</title>
+    <style>
+        table{font-size: 4;}
+        table td tr{padding: 3px;}
+        p{text-align: center;}
+    </style>
+</head>
+<body>
+    <br>
+    <table style="font-size: 5;">
+        <tr>
+            <td>
+                <label>Cliente: </label><strong>{{ingreso.cliente.Nombre|upper}}</strong>
+                <br><br>
+            </td>
+        </tr>
+    </table>
+    
+    <table style="max-width: 60%; margin: auto; margin-top: 100px; font-size: 5;">
+        <thead>
+            <th width="130px">FECHA</th>
+            <th width="152px">LOTE</th>
+            {% for key, value in getTotal.items %}
+                {% if not value == 0 %}
+                    <th width="100px">
+                        {% if not key == 'DM.Ag' %}
+                            %{{ key }}
+                        {% else %}
+                            {{ key }}
+                        {% endif %}
+                    </th>
+                {% else %}
+                    <th width="0%"></th>
+                {% endif %}
+            {% endfor %} 
+        </thead>
+        <tbody>
+            {% for i in productos %}
+            <tr style="padding:0px">
+                <td align="center">{{i.fecha|date:" d/m/Y"}}</td>
+                <td align="center">{{i.Lote|upper}}</td>
+                {% for j in results %}       
+                    {% if j.producto_id == i.id %}
+                            <td align="center">{{j.Zinc|default_if_none:" "}}</td>
+                            <td align="center">{{j.Plata|default_if_none:" "}}</td>
+                            <td align="center">{{j.Plomo|default_if_none:" "}}</td>
+
+                            <td align="center">{{j.Estanio|default_if_none:" "}}</td>
+                            <td align="center">{{j.Cobre|default_if_none:" "}}</td>
+                            <td align="center">{{j.H2O|default_if_none:" "}}</td>
+
+                            <td align="center">{{j.Antimonio|default_if_none:" "}}</td>
+                            <td align="center">{{j.Arsenico|default_if_none:" "}}</td>
+                            <td align="center">{{j.Hierro|default_if_none:" "}}</td>
+
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tr>
+            <td colspan="3" style="font-size: 4;">
+                Potosí {{date_today|date}}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" align="center">
+                <a type="button" href="https://laboratorio-quimico.herokuapp.com/print-certify-email/{{ingreso.id}}" target="_blank" id="print" class="btn btn-success">IMPRIMIR CERTIFICADO</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

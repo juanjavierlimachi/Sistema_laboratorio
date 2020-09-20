@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reportes</title>
+    <title>Reporte Certificado</title>
     <style>
         table{font-size: 4;}
         table td tr{padding: 3px;}
@@ -11,30 +11,32 @@
     </style>
 </head>
 <body>
-    <br><br>
-    {% if ingreso.cliente.Particular %}
-        <br>
-    {% endif %}
-    <table style="font-size: 5;">
-        <tr><br><br><br><br>
-            <td style="font-size: 4; margin-left: 100px;" colspan="2"><br><br>
-                <br>
-            </td>
-            <td align="left"><br>{{ingreso.id}}</td>
-        </tr>
+    <br>
+    <table>
         <tr>
-            <td></td>
-            <td colspan="2" style="margin-left: 50px;">
-                <strong>{{ingreso.cliente.Nombre|upper}}</strong>
-                <br><br><br><br><br>
+            <td align="center" style="font-size: 3;">
+                Laboratorio Químico<br>
+                1 de Mayo<br>
+                Potosí-Bolivia
+            </td>
+            <td align="center"  style="font-size: 3;">
+                Dirección Calle: Surco 314<br>
+                Celular: 77474926<br>
+                Email: lab.quimico1de.mayo@gmail.com 
             </td>
         </tr>
-    </table>
+        
+    </table><br><br>
     <table>
         <tr>
             <td width="100px"></td>
             <td>
-                <table style="max-width: 60%; margin: auto; margin-top: 100px; font-size: 5;">
+                <table style="max-width: 60%; margin: auto; margin-top: 50px; font-size: 5;">
+                    <tr>
+                        <td align="center" colspan="11">
+                            <strong>CERTIFICADO DE ANÁLISIS DE MINERALES NRO : {{ingreso.id}}</strong>
+                        </td>
+                    </tr>
                     <thead>
                         <th width="130px">FECHA</th>
                         <th width="152px">LOTE</th>
@@ -78,23 +80,19 @@
                     </tbody>
                     <tr>
                         <td colspan="3" style="font-size: 4;">
-                            Potosí {{date_today|date}}
+                            Fecha de impreción: {{date_today|date}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="font-size: 3;">
+                            Si desea hacer alguna consulta sobre este documento, 
+                            póngase en contacto con el propietario celular: 77474926 
+                            o al correo: lab.quimico1de.mayo@gmail.com
                         </td>
                     </tr>
                 </table>
             </td>
             <td width="100px"></td>
-            <tr>
-                <td colspan="3" style="text-align: center;">
-                    <br><br><br><br>
-                    <strong>
-                        {% if usuario.is_superuser %}
-                            Jefe de Laboratorio<br>
-                        {% else %}
-                            Usuario <br>
-                        {% endif %}
-                    </strong> {{usuario.get_full_name|title}}
-            </tr>
         </tr>
     </table>
 </body>
